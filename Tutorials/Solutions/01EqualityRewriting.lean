@@ -8,46 +8,21 @@ mathematical objects A and B are equal then, in any statement involving A, one c
 by B. This operation is called rewriting, and the Lean "tactic" for this is `rw`.
 
 In the following exercises, we will use the following two lemmas:
-  mul_assoc a b c : a * b * c = a * (b * c)
-  mul_comm a b : a*b = b*a
+  `mul_assoc a b c : a * b * c = a * (b * c)`
+  `mul_comm a b : a*b = b*a`
 
 Hence the command
-  rw mul_assoc a b c,
-will replace a*b*c by a*(b*c) in the current goal.
+  `rw mul_assoc a b c`,
+will replace `a*b*c` by `a*(b*c)` in the current goal.
 
 In order to replace backward, we use
-  rw ← mul_assoc a b c,
-replacing a*(b*c) by a*b*c in the current goal.
+  `rw ← mul_assoc a b c`,
+replacing `a*(b*c)` by `a*b*c` in the current goal.
 
 Of course we don't want to constantly invoke those lemmas, and we will eventually introduce
 more powerful solutions.
 -/
-/-
-One of the earliest kind of proofs one encounters while learning mathematics is proving by
-a calculation. It may not sound like a proof, but this is actually using lemmas expressing
-properties of operations on numbers. It also uses the fundamental property of equality: if two
-mathematical objects A and B are equal then, in any statement involving A, one can replace A
-by B. This operation is called rewriting, and the Lean "tactic" for this is `rw`.
 
-In the following exercises, we will use the following two lemmas:
-  mul_assoc a b c : a * b * c = a * (b * c)
-  mul_comm a b : a*b = b*a
-
-Hence the command
-  rw mul_assoc a b c,
-will replace a*b*c by a*(b*c) in the current goal.
-
-In order to replace backward, we use
-  rw ← mul_assoc a b c,
-replacing a*(b*c) by a*b*c in the current goal.
-
-Of course we don't want to constantly invoke those lemmas, and we will eventually introduce
-more powerful solutions.
--/
--- Uncomment the following line if you want to see parentheses around subexpressions.
--- Uncomment the following line if you want to see parentheses around subexpressions.
--- set_option pp.parens true
--- set_option pp.parens true
 example (a b c : ℝ) : a * b * c = b * (a * c) := by
   rw [mul_comm a b]
   rw [mul_assoc b a c]
@@ -72,7 +47,7 @@ example (a b c : ℝ) : a * (b * c) = b * (a * c) := by
 Now let's return to the preceding example to experiment with what happens
 if we don't give arguments to mul_assoc or mul_comm.
 For instance, you can start the next proof with
-  rw ← mul_assoc,
+  `rw ← mul_assoc`,
 Try to figure out what happens.
 -/
 -- 0003
@@ -143,13 +118,13 @@ From a practical point of view, when writing such a proof, it is convenient to:
 Let's return to the other example using this method.
 -/
 -- 0005
-example (a b c d : ℝ) (hyp : c = b * a - d) (hyp' : d = a * b) : c = 0 := by-- sorry
+example (a b c d : ℝ) (hyp : c = b * a - d) (hyp' : d = a * b) : c = 0 := by
+  -- sorry
   calc
     c = b * a - d := by rw [hyp]
     _ = b * a - a * b := by rw [hyp']
     _ = a * b - a * b := by rw [mul_comm a b]
     _ = 0 := by rw [sub_self (a * b)]
-
   -- sorry
 
 /-
@@ -172,7 +147,8 @@ example (a b c d : ℝ) (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d
 Of course we can use `ring` outside of `calc`. Let's do the next one in one line.
 -/
 -- 0006
-example (a b c : ℝ) : a * (b * c) = b * (a * c) := by-- sorry
+example (a b c : ℝ) : a * (b * c) = b * (a * c) := by
+  -- sorry
   ring
   -- sorry
 
@@ -180,7 +156,8 @@ example (a b c : ℝ) : a * (b * c) = b * (a * c) := by-- sorry
 This is too much fun. Let's do it again.
 -/
 -- 0007
-example (a b : ℝ) : a + b + a = 2 * a + b := by-- sorry
+example (a b : ℝ) : a + b + a = 2 * a + b := by
+  -- sorry
   ring
   -- sorry
 

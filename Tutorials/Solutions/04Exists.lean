@@ -56,7 +56,6 @@ example (h₁ : a ∣ b) (h₂ : b ∣ c) : a ∣ c := by
     c = b * l := hl
     _ = a * k * l := by rw [hk]
     _ = a * (k * l) := by ring
-
   -- sorry
 
 /-

@@ -43,7 +43,6 @@ theorem non_imp (P Q : Prop) : ¬(P → Q) ↔ P ∧ ¬Q := by
   · intro h h'
     cases' h with hP hnQ
     exact hnQ (h' hP)
-#align non_imp non_imp
   -- sorry
 
 -- In the next one, let's use the axiom

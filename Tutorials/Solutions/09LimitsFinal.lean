@@ -39,7 +39,6 @@ theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∃ N, 
   specialize hN' N₀ (le_max_right N N')
   rw [abs_le] at hN
   linarith
-#align le_lim le_lim
   -- sorry
 
 /-
@@ -125,13 +124,11 @@ theorem isSup_iff (A : Set ℝ) (x : ℝ) :
       intro n
       apply ymaj
       apply u_in
-#align is_sup_iff isSup_iff
   -- sorry
 
 /-- Continuity of a function at a point  -/
 def ContinuousAtPt (f : ℝ → ℝ) (x₀ : ℝ) : Prop :=
   ∀ ε > 0, ∃ δ > 0, ∀ x, |x - x₀| ≤ δ → |f x - f x₀| ≤ ε
-#align continuous_at_pt ContinuousAtPt
 
 variable {f : ℝ → ℝ} {x₀ : ℝ} {u : ℕ → ℝ}
 
@@ -146,7 +143,6 @@ theorem seq_continuous_of_continuous (hf : ContinuousAtPt f x₀) (hu : SeqLimit
   intro n hn
   apply hδ
   exact hN n hn
-#align seq_continuous_of_continuous seq_continuous_of_continuous
   -- sorry
 
 -- 0074
@@ -217,8 +213,6 @@ theorem subseq_tendstoinfinity (h : TendstoInfinity u) (hφ : Extraction φ) :
   calc
     N ≤ n := hn
     _ ≤ φ n := id_le_extraction hφ n
-
-#align subseq_tendstoinfinity subseq_tendstoinfinity
   -- sorry
 
 -- 0076
@@ -232,7 +226,6 @@ theorem squeeze_infinity {u v : ℕ → ℝ} (hu : TendstoInfinity u) (huv : ∀
   specialize hN n hn
   specialize huv n
   linarith
-#align squeeze_infinity squeeze_infinity
   -- sorry
 
 /-
@@ -272,9 +265,8 @@ theorem bdd_above_segment {f : ℝ → ℝ} {a b : ℝ} (hf : ∀ x ∈ Icc a b,
   exact (hu n).left
   rcases bolzano_weierstrass bornes with ⟨c, c_dans, φ, φ_extr, lim⟩
   have lim_infinie_extr : TendstoInfinity (f ∘ u ∘ φ) := subseq_tendstoinfinity lim_infinie φ_extr
-  have lim_extr : SeqLimit (f ∘ u ∘ φ) (f c) := seq_continuous_of_continuous (hf c c_dans) limUnder
+  have lim_extr : SeqLimit (f ∘ u ∘ φ) (f c) := seq_continuous_of_continuous (hf c c_dans) lim
   exact not_seqLimit_of_tendstoinfinity lim_infinie_extr (f c) lim_extr
-#align bdd_above_segment bdd_above_segment
   -- sorry
 
 /-
@@ -294,7 +286,6 @@ theorem continuous_opposite {f : ℝ → ℝ} {x₀ : ℝ} (h : ContinuousAtPt f
   have : -f y - -f x₀ = -(f y - f x₀); ring
   rw [this, abs_neg]
   exact h y hy
-#align continuous_opposite continuous_opposite
   -- sorry
 
 /-
@@ -314,7 +305,6 @@ theorem bdd_below_segment {f : ℝ → ℝ} {a b : ℝ} (hf : ∀ x ∈ Icc a b,
   intro x x_dans
   specialize hM x x_dans
   linarith
-#align bdd_below_segment bdd_below_segment
   -- sorry
 
 /-
@@ -373,7 +363,7 @@ example {a b : ℝ} (hab : a ≤ b) (hf : ∀ x ∈ Icc a b, ContinuousAtPt f x)
     exact hf x₀ x₀_in
     exact lim_vφ
   have unique : f x₀ = y₀ := by
-    apply unique_limit limUnder
+    apply unique_limit lim
     rw [hufv] at lim_u
     exact subseq_tendsto_of_tendsto lim_u φ_extr
   rw [Unique]
@@ -383,14 +373,12 @@ example {a b : ℝ} (hab : a ≤ b) (hf : ∀ x ∈ Icc a b, ContinuousAtPt f x)
 
 theorem stupid {a b x : ℝ} (h : x ∈ Icc a b) (h' : x ≠ b) : x < b :=
   lt_of_le_of_ne h.right h'
-#align stupid stupid
 
 /-
 And now the final boss...
 -/
 def i :=
   (Icc 0 1 : Set ℝ)
-#align I i
 
 -- the type ascription makes sure 0 and 1 are real numbers here
 -- 0081
@@ -467,7 +455,7 @@ example (f : ℝ → ℝ) (hf : ∀ x, ContinuousAtPt f x) (h₀ : f 0 < 0) (h�
       by
       apply seq_continuous_of_continuous (hf x₀)
       apply limit_const_add_inv_succ
-    apply le_lim limUnder
+    apply le_lim lim
     cases' in_I with N hN
     use N
     intro n hn

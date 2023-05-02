@@ -232,7 +232,6 @@ In order to prove this, we can use either
 -/
 def EvenFun (f : ℝ → ℝ) :=
   ∀ x, f (-x) = f x
-#align even_fun EvenFun
 
 -- 0051
 example (f : ℝ → ℝ) : ¬EvenFun f ↔ ∃ x, f (-x) ≠ f x := by
@@ -277,7 +276,6 @@ example (f : ℝ → ℝ) : ¬EvenFun f ↔ ∃ x, f (-x) ≠ f x := by
 
 def BoundedAbove (f : ℝ → ℝ) :=
   ∃ M, ∀ x, f x ≤ M
-#align bounded_above BoundedAbove
 
 example : ¬BoundedAbove fun x => x := by
   unfold BoundedAbove

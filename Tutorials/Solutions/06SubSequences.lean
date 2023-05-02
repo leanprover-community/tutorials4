@@ -43,7 +43,6 @@ theorem id_le_extraction' : Extraction φ → ∀ n, n ≤ φ n := by
   induction' n with n hn
   · exact Nat.zero_le _
   · exact Nat.succ_le_of_lt (by linarith [hyp n (n + 1) (by linarith)])
-#align id_le_extraction' id_le_extraction'
 
 -- 0039
 /-- Extractions take arbitrarily large values for arbitrarily large
@@ -57,8 +56,6 @@ theorem extraction_ge : Extraction φ → ∀ N N', ∃ n ≥ N', φ n ≥ N := 
   calc
     N ≤ max N N' := by apply le_max_left
     _ ≤ φ (max N N') := by apply id_le_extraction' h
-
-#align extraction_ge extraction_ge
   -- sorry
 
 variable {u : ℕ → ℝ} {a l : ℝ}
@@ -81,7 +78,6 @@ theorem near_cluster : ClusterPoint u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n
   cases' hφ ε ε_pos with N' hN'
   rcases extraction_ge φ_extr N N' with ⟨q, hq, hq'⟩
   exact ⟨φ q, hq', hN' _ hq⟩
-#align near_cluster near_cluster
   -- sorry
 
 /-
@@ -101,8 +97,6 @@ theorem subseq_tendsto_of_tendsto' (h : SeqLimit u l) (hφ : Extraction φ) : Se
   calc
     N ≤ n := hn
     _ ≤ φ n := id_le_extraction' hφ n
-
-#align subseq_tendsto_of_tendsto' subseq_tendsto_of_tendsto'
   -- sorry
 
 -- 0042
@@ -112,13 +106,11 @@ theorem cluster_limit (hl : SeqLimit u l) (ha : ClusterPoint u a) : a = l := by
   rcases ha with ⟨φ, φ_extr, lim_u_φ⟩
   have lim_u_φ' : SeqLimit (u ∘ φ) l := subseq_tendsto_of_tendsto' hl φ_extr
   exact unique_limit lim_u_φ lim_u_φ'
-#align cluster_limit cluster_limit
   -- sorry
 
 /-- Cauchy_sequence sequence -/
 def CauchySequence (u : ℕ → ℝ) :=
   ∀ ε > 0, ∃ N, ∀ p q, p ≥ N → q ≥ N → |u p - u q| ≤ ε
-#align cauchy_sequence CauchySequence
 
 -- 0043
 example : (∃ l, SeqLimit u l) → CauchySequence u := by
@@ -134,7 +126,6 @@ example : (∃ l, SeqLimit u l) → CauchySequence u := by
     _ ≤ |u p - l| + |l - u q| := by apply abs_add
     _ = |u p - l| + |u q - l| := by rw [abs_sub_comm (u q) l]
     _ ≤ ε := by linarith [hN p hp, hN q hq]
-
   -- sorry
 
 /-
@@ -156,6 +147,5 @@ example (hu : CauchySequence u) (hl : ClusterPoint u l) : SeqLimit u l := by
     |u n - l| = |u n - u N' + (u N' - l)| := by ring
     _ ≤ |u n - u N'| + |u N' - l| := by apply abs_add
     _ ≤ ε := by linarith [hN n N' (by linarith) hNN']
-
   -- sorry
 

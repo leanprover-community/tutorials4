@@ -39,3 +39,9 @@ need help about any specific exercise, you can come on
 [Zulip](https://leanprover.zulipchat.com) in the "new members" stream
 and look for a thread called "tutorials4 NNNN" where NNNN is the exercise
 number. If no such thread exists, you can create one!
+
+## Not yet working
+
+A list of things that don't work (yet) in Lean 4
+* `linarith` gives many errors
+* `set_option pp.parens true`

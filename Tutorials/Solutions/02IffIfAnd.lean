@@ -103,11 +103,11 @@ example (a b : ℝ) (ha : 0 ≤ a) : b ≤ a + b := by
 
 -- Let's do a variant.
 -- 0010
-example (a b : ℝ) (hb : 0 ≤ b) : a ≤ a + b := by-- sorry
+example (a b : ℝ) (hb : 0 ≤ b) : a ≤ a + b := by
+  -- sorry
   calc
     a = a + 0 := by ring
     _ ≤ a + b := add_le_add_left hb a
-
   -- sorry
 
 /-
@@ -132,20 +132,20 @@ transitivity of inequalities will be used automatically to assemble
 the pieces.
 -/
 -- 0011
-example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a + b := by-- sorry
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a + b := by
+  -- sorry
   calc
     0 ≤ a := ha
     _ ≤ a + b := le_add_of_nonneg_right hb
-
   -- sorry
 
 -- And let's combine with our earlier lemmas.
 -- 0012
-example (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) : a + c ≤ b + d := by-- sorry
+example (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) : a + c ≤ b + d := by
+  -- sorry
   calc
     a + c ≤ b + c := add_le_add_right hab c
     _ ≤ b + d := add_le_add_left hcd b
-
   -- sorry
 
 /-
@@ -233,7 +233,7 @@ example (a b c : ℝ) (hc : c ≤ 0) (hab : a ≤ b) : b * c ≤ a * c := by
   rw [← sub_nonneg]
   have fact : a * c - b * c = (a - b) * c
   ring
-  rw [Fact]
+  rw [fact]
   apply mul_nonneg_of_nonpos_of_nonpos
   · rwa [sub_nonpos]
   · exact hc
@@ -259,7 +259,6 @@ example (a b c : ℝ) (hc : c ≤ 0) (hab : a ≤ b) : b * c ≤ a * c := by
   calc
     0 ≤ (a - b) * c := mul_nonneg_of_nonpos_of_nonpos hab' hc
     _ = a * c - b * c := by ring
-
   -- sorry
 
 /-
@@ -303,7 +302,6 @@ example (a b : ℝ) : 0 ≤ b → a ≤ a + b := by
   calc
     a = a + 0 := by ring
     _ ≤ a + b := add_le_add_left hb a
-
   -- sorry
 
 /-
@@ -350,7 +348,7 @@ Let's practice `cases` and `split`. In the next exercise, P, Q and R denote
 unspecified mathematical statements.
 -/
 -- 0017
-example (P Q R : Prop) : P ∧ Q → Q ∧ P := by
+example (P Q : Prop) : P ∧ Q → Q ∧ P := by
   -- sorry
   intro hyp
   cases' hyp with hP hQ
@@ -383,7 +381,7 @@ by
   rintros ⟨h₁, h₂⟩,
 Now redo the previous exercise using all those compressing techniques, in exactly two lines. -/
 -- 0018
-example (P Q R : Prop) : P ∧ Q → Q ∧ P := by
+example (P Q : Prop) : P ∧ Q → Q ∧ P := by
   -- sorry
   rintro ⟨hP, hQ⟩
   exact ⟨hQ, hP⟩
@@ -427,13 +425,15 @@ example (a b : ℝ) (hb : 0 ≤ b) : a ≤ a + b := by linarith
 Now let's enjoy this for a while.
 -/
 -- 0020
-example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a + b := by-- sorry
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a + b := by
+  -- sorry
   linarith
   -- sorry
 
 -- And let's combine with our earlier lemmas.
 -- 0021
-example (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) : a + c ≤ b + d := by-- sorry
+example (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) : a + c ≤ b + d := by
+  -- sorry
   linarith
   -- sorry
 
@@ -462,7 +462,7 @@ example (a b : ℕ) : a ∣ b ↔ gcd a b = a := by
   have fact : gcd a b ∣ a ∧ gcd a b ∣ b := by rw [← dvd_gcd_iff]
   constructor
   · intro h
-    apply dvd_antisymm fact.left
+    apply Nat.dvd_antisymm fact.left
     rw [dvd_gcd_iff]
     exact ⟨dvd_refl a, h⟩
   · intro h

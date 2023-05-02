@@ -6,7 +6,7 @@ Everything is covered again more slowly and with exercises in the next files.
 ! This file was ported from Lean 3 source module main
 -/
 import Mathlib.Data.Real.Basic
-import Mathlib.Tactic.Suggest
+import Mathlib.Tactic.LibrarySearch
 
 -- We want real numbers and their basic properties
 -- We want to be able to use Lean's built-in "help" functionality
@@ -20,7 +20,7 @@ open Classical
 /-
 Our first goal is to define the set of upper bounds of a set of real numbers.
 This is already defined in mathlib (in a more general context), but we repeat
-it for the sake of exposition. Right-click "upper_bounds" below to get offered
+it for the sake of exposition. Right-click "upperBounds" below to get offered
 to jump to mathlib's version
 -/
 #check upperBounds
@@ -28,32 +28,28 @@ to jump to mathlib's version
 /-- The set of upper bounds of a set of real numbers ℝ -/
 def upBounds (A : Set ℝ) :=
   { x : ℝ | ∀ a ∈ A, a ≤ x }
-#align up_bounds upBounds
 
 /-- Predicate `is_maximum a A` means `a` is a maximum of `A` -/
 def IsMaximum (a : ℝ) (A : Set ℝ) :=
   a ∈ A ∧ a ∈ upBounds A
-#align is_maximum IsMaximum
 
--- mathport name: «expr is_a_max_of »
-infixl:55
-  " is_a_max_of " =>/-
-  In the above definition, the symbol `∧` means "and". We also see the most
-  visible difference between set theoretic foundations and type theoretic ones
-  (used by almost all proof assistants). In set theory, everything is a set, and the
-  only relation you get from foundations are `=` and `∈`. In type theory, there is
-  a meta-theoretic relation of "typing": `a : ℝ` reads "`a` is a real number" or,
-  more precisely, "the type of `a` is `ℝ`". Here "meta-theoretic" means this is not a
-  statement you can prove or disprove inside the theory, it's a fact that is true or
-  not. Here we impose this fact, in other circumstances, it would be checked by the
-  Lean kernel.
-  By contrast, `a ∈ A` is a statement inside the theory. Here it's part of the
-  definition, in other circumstances it could be something proven inside Lean.
-  -/
-  /- For illustrative purposes, we now define an infix version of the above predicate.
-  It will allow us to write `a is_a_max_of A`, which is closer to a sentence.
-  -/
-  IsMaximum
+/-
+In the above definition, the symbol `∧` means "and". We also see the most
+visible difference between set theoretic foundations and type theoretic ones
+(used by almost all proof assistants). In set theory, everything is a set, and the
+only relation you get from foundations are `=` and `∈`. In type theory, there is
+a meta-theoretic relation of "typing": `a : ℝ` reads "`a` is a real number" or,
+more precisely, "the type of `a` is `ℝ`". Here "meta-theoretic" means this is not a
+statement you can prove or disprove inside the theory, it's a fact that is true or
+not. Here we impose this fact, in other circumstances, it would be checked by the
+Lean kernel.
+By contrast, `a ∈ A` is a statement inside the theory. Here it's part of the
+definition, in other circumstances it could be something proven inside Lean.
+-/
+/- For illustrative purposes, we now define an infix version of the above predicate.
+It will allow us to write `a is_a_max_of A`, which is closer to a sentence.
+-/
+infixl:55 " is_a_max_of " => IsMaximum
 
 /-
 Let's prove something now! A set of real numbers has at most one maximum. Here
@@ -76,7 +72,6 @@ theorem unique_max (A : Set ℝ) (x y : ℝ) (hx : x is_a_max_of A) (hy : y is_a
   -- `linarith` proves equalities and inequalities that follow linearly from
   -- the assumption we have.
   linarith
-#align unique_max unique_max
 
 /-
 The above proof is too long, even if you remove comments. We don't really need the
@@ -118,8 +113,8 @@ example (A : Set ℝ) (x y : ℝ) (hx : x is_a_max_of A) (hy : y is_a_max_of A) 
   le_antisymm (hy.2 x hx.1) (hx.2 y hy.1)
 
 /-
-Such a proof is called a proof term (or a "term mode" proof). Notice it has no `begin`
-and `end`. It is directly the kind of low level proof that the Lean kernel is
+Such a proof is called a proof term (or a "term mode" proof). Notice it has no `by`.
+It is directly the kind of low level proof that the Lean kernel is
 consuming. Commands like `cases`, `specialize` or `linarith` are called tactics, they
 help users constructing proof terms that could be very tedious to write directly.
 The most efficient proof style combines tactics with proof terms like our previous
@@ -132,7 +127,6 @@ in term of sequences.
 /-- The set of lower bounds of a set of real numbers ℝ -/
 def lowBounds (A : Set ℝ) :=
   { x : ℝ | ∀ a ∈ A, x ≤ a }
-#align low_bounds lowBounds
 
 /-
 We now define `a` is an infimum of `A`. Again there is already a more general version
@@ -140,7 +134,6 @@ in mathlib.
 -/
 def IsInf (x : ℝ) (A : Set ℝ) :=
   x is_a_max_of lowBounds A
-#align is_inf IsInf
 
 -- mathport name: «expr is_an_inf_of »
 infixl:55 " is_an_inf_of " => IsInf
@@ -162,7 +155,6 @@ theorem inf_lt {A : Set ℝ} {x : ℝ} (hx : x is_an_inf_of A) : ∀ y, x < y �
   -- `h` is exactly saying `y` is a lower bound of `A` so the second part of
   -- the infimum assumption `hx` applied to `y` and `h` is exactly what we want.
   exact hx.2 y h
-#align inf_lt inf_lt
 
 /-
 In the above proof, the sequence `contrapose, push_neg` is so common that it can be
@@ -186,7 +178,6 @@ theorem le_of_le_add_eps {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x :=
   constructor
   linarith
   linarith
-#align le_of_le_add_eps le_of_le_add_eps
 
 /-
 Note how `linarith` was used for both sub-goals at the end of the above proof.
@@ -233,39 +224,37 @@ example {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x := by
   by_contra H
   push_neg  at H
   -- Now let's compute.
-  have key :=
-    calc
-      -- Each line must end with a colon followed by a proof term
-          -- We want to specialize our assumption `h` to `ε = (y-x)/2` but this is long to
-          -- type, so let's put a hole `_` that Lean will fill in by comparing the
-          -- statement we want to prove and our proof term with a hole. As usual,
-          -- positivity of `(y-x)/2` is proved by `linarith`
-          y ≤
-          x + (y - x) / 2 :=
-        h _ (by linarith)
+  have key := calc
+      -- Each line must end with `:=` followed by a proof term
+      -- We want to specialize our assumption `h` to `ε = (y-x)/2` but this is long to
+      -- type, so let's put a hole `_` that Lean will fill in by comparing the
+      -- statement we want to prove and our proof term with a hole. As usual,
+      -- positivity of `(y-x)/2` is proved by `linarith`
+          y ≤ x + (y - x) / 2 := h _ (by linarith)
       _ = x / 2 + y / 2 := by ring
       _ < y := by linarith
 
   -- our key now says `y < y` (notice how the sequence `≤`, `=`, `<` was correctly
   -- merged into a `<`). Let `linarith` find the desired contradiction now.
   linarith
-
 -- alternatively, we could have provided the proof term
 -- `exact lt_irrefl y key`
+
 /-
 Now we are ready for some analysis. Let's define convergence of sequences of real numbers
 (of course there is a much more general definition in mathlib).
 -/
+
 /-- The sequence `u` tends to `l` -/
 def Limit (u : ℕ → ℝ) (l : ℝ) :=
   ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε
-#align limit Limit
 
 /-
 In the above definition, `u n` denotes the n-th term of the sequence. We can
 add parentheses to get `u(n)` but we try to avoid parentheses because they pile up
 very quickly
 -/
+
 -- If y ≤ u n for all n and u n goes to x then y ≤ x
 theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : Limit u x) (ineq : ∀ n, y ≤ u n) : y ≤ x := by
   -- Let's apply our previous lemma
@@ -281,17 +270,14 @@ theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : Limit u x) (ineq : ∀ n, y �
     y ≤ u N := ineq N
     _ = x + (u N - x) := by linarith
     -- We'll need `add_le_add` which says `a ≤ b` and `c ≤ d` implies `a + c ≤ b + d`
-        -- We need a lemma saying `z ≤ |z|`. Because we don't know the name of this lemma,
-        -- let's use `library_search`. Because searching through the library is slow,
-        -- Lean will write what it found in the Lean message window when cursor is on
-        -- that line, so that we can replace it by the lemma. We see `le_abs_self`, which
-        -- says `a ≤ |a|`, exactly what we're looking for.
-        _ ≤
-        x + |u N - x| :=
+    -- We need a lemma saying `z ≤ |z|`. Because we don't know the name of this lemma,
+    -- let's use `library_search`. Because searching through the library is slow,
+    -- Lean will write what it found in the Lean message window when cursor is on
+    -- that line, so that we can replace it by the lemma. We see `le_abs_self`, which
+    -- says `a ≤ |a|`, exactly what we're looking for.
+    _ ≤ x + |u N - x| :=
       (add_le_add (by linarith) (by library_search))
     _ ≤ x + ε := add_le_add (by linarith) (HN N (by linarith))
-
-#align le_lim le_lim
 
 /-
 The next lemma has been extracted from the main proof in order to discuss numbers.
@@ -317,7 +303,6 @@ theorem inv_succ_pos : ∀ n : ℕ, 1 / (n + 1 : ℝ) > 0 := by
   norm_cast
   -- and then get the usual help from `linarith`
   linarith
-#align inv_succ_pos inv_succ_pos
 
 /-
 That was a pretty long proof for an obvious fact. And stating it as a lemma feels
@@ -368,7 +353,6 @@ theorem limit_inv_succ : ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, 1 / (n + 1 : ℝ)
   -- archimedean. This is done using the `apply_instance` tactic that will be
   -- covered elsewhere.
   exact archimedean_iff_nat_le.1 (by infer_instance) (1 / ε)
-#align limit_inv_succ limit_inv_succ
 
 /-
 We can now put all pieces together, with almost no new things to explain.
@@ -414,8 +398,7 @@ theorem inf_seq (A : Set ℝ) (x : ℝ) :
     constructor
     exact x_min
     intro y y_mino
-    apply le_lim limUnder
+    apply le_lim lim
     intro n
     exact y_mino (u n) (huA n)
-#align inf_seq inf_seq
 

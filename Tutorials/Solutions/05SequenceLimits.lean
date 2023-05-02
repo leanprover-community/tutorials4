@@ -169,7 +169,6 @@ example (hu : SeqLimit u l) (hw : SeqLimit w l) (h : ∀ n, u n ≤ v n) (h' : �
   calc
     v n - l ≤ w n - l := by linarith
     _ ≤ ε := by linarith
-
   -- sorry
 
 -- What about < ε?
@@ -211,7 +210,6 @@ example : SeqLimit u l → SeqLimit u l' → l = l' := by
     _ ≤ |l - u (max N N')| + |u (max N N') - l'| := by apply abs_add
     _ = |u (max N N') - l| + |u (max N N') - l'| := by rw [abs_sub_comm]
     _ ≤ ε := by linarith [hN (max N N') (le_max_left _ _), hN' (max N N') (le_max_right _ _)]
-
   -- sorry
 
 /-
@@ -219,11 +217,9 @@ Let's now practice deciphering definitions before proving.
 -/
 def NonDecreasing (u : ℕ → ℝ) :=
   ∀ n m, n ≤ m → u n ≤ u m
-#align non_decreasing NonDecreasing
 
 def IsSeqSup (M : ℝ) (u : ℕ → ℝ) :=
   (∀ n, u n ≤ M) ∧ ∀ ε > 0, ∃ n₀, u n₀ ≥ M - ε
-#align is_seq_sup IsSeqSup
 
 -- 0038
 example (M : ℝ) (h : IsSeqSup M u) (h' : NonDecreasing u) : SeqLimit u M := by

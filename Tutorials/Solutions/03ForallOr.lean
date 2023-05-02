@@ -1,5 +1,23 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Group.Pi
+import Mathlib.Tactic.Relation.Rfl
+
+-- todo: fix in mathlib
+open Lean Meta Elab Mathlib Tactic in
+elab "rfl" : tactic => withMainContext do
+  let tgt := (← getMainTarget).cleanupAnnotations
+  let .app (.app rel _) _ := tgt
+    | throwError "reflexivity lemmas only apply to binary relations, not {indentExpr tgt}"
+  let s ← saveState
+  for lem in ← (reflExt.getState (← getEnv)).getMatch rel do
+    try
+      liftMetaTactic (·.apply (← mkConstWithFreshMVarLevels lem))
+      return
+    catch e =>
+      s.restore
+      throw e
+  throwError "rfl failed, no lemma with @[refl] applies"
+
 
 /-
 In this file, we'll learn about the ∀ quantifier, and the disjunction
@@ -24,11 +42,9 @@ Let's define two predicates to play with ∀.
 -/
 def EvenFun (f : ℝ → ℝ) :=
   ∀ x, f (-x) = f x
-#align even_fun EvenFun
 
 def OddFun (f : ℝ → ℝ) :=
   ∀ x, f (-x) = -f x
-#align odd_fun OddFun
 
 /-
 In the next proof, we also take the opportunity to introduce the
@@ -91,7 +107,6 @@ example (f g : ℝ → ℝ) : EvenFun f → EvenFun g → EvenFun (f + g) := by
     (f + g) (-x) = f (-x) + g (-x) := rfl
     _ = f x + g x := by rw [hf, hg]
 
-
 /-
 Now let's practice. If you need to learn how to type a unicode symbol,
 you can put your mouse cursor above the symbol and wait for one second.
@@ -103,7 +118,6 @@ example (f g : ℝ → ℝ) : EvenFun f → EvenFun (g ∘ f) := by
   calc
     (g ∘ f) (-x) = g (f (-x)) := rfl
     _ = g (f x) := by rw [hf]
-
   -- sorry
 
 -- 0024
@@ -112,8 +126,7 @@ example (f g : ℝ → ℝ) : OddFun f → OddFun g → OddFun (g ∘ f) := by
   intro hf hg x
   calc
     (g ∘ f) (-x) = g (f (-x)) := rfl
-    _ = -(g ∘ f) x := by rw [hf, hg]
-
+    _ = -(g ∘ f) x := by rw [hf, hg, Function.comp]
   -- sorry
 
 /-
@@ -123,11 +136,9 @@ In the next definitions, note how `∀ x₁, ∀ x₂` is abreviated to `∀ x�
 -/
 def NonDecreasing (f : ℝ → ℝ) :=
   ∀ x₁ x₂, x₁ ≤ x₂ → f x₁ ≤ f x₂
-#align non_decreasing NonDecreasing
 
 def NonIncreasing (f : ℝ → ℝ) :=
   ∀ x₁ x₂, x₁ ≤ x₂ → f x₁ ≥ f x₂
-#align non_increasing NonIncreasing
 
 -- Let's be very explicit and use forward reasoning first.
 example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonDecreasing (g ∘ f) := by
@@ -264,7 +275,8 @@ example (f : ℝ → ℝ) : NonDecreasing f ↔ ∀ x y, x < y → f x ≤ f y :
   · intro hf x y hxy
     have clef : x = y ∨ x < y := eq_or_lt_of_le hxy
     cases' clef with hxy hxy
-    rw [hxy]
+    · rw [hxy]
+      rfl
     exact hf x y hxy
   -- sorry
 

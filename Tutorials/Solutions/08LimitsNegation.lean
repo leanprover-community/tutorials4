@@ -103,7 +103,6 @@ example {u : ℕ → ℝ} : TendstoInfinity u → ∀ l, ¬SeqLimit u l := by
 
 def NondecreasingSeq (u : ℕ → ℝ) :=
   ∀ n m, n ≤ m → u n ≤ u m
-#align nondecreasing_seq NondecreasingSeq
 
 -- 0067
 example (u : ℕ → ℝ) (l : ℝ) (h : SeqLimit u l) (h' : NondecreasingSeq u) : ∀ n, u n ≤ l := by
@@ -162,7 +161,6 @@ theorem le_of_le_add_all' {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x :
   intro h
   use (y - x) / 2
   constructor <;> linarith
-#align le_of_le_add_all' le_of_le_add_all'
   -- sorry
 
 -- 0070
