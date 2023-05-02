@@ -1,4 +1,4 @@
-import Mathbin.Data.Real.Basic
+import Mathlib.Data.Real.Basic
 
 open Classical
 
@@ -19,8 +19,7 @@ section NegationProp
 variable (P Q : Prop)
 
 -- 0055
-example : P → Q ↔ ¬Q → ¬P :=
-  by
+example : P → Q ↔ ¬Q → ¬P := by
   -- sorry
   constructor
   · intro h hnQ hP
@@ -28,11 +27,10 @@ example : P → Q ↔ ¬Q → ¬P :=
   · intro h hP
     by_contra hnQ
     exact h hnQ hP
+  -- sorry
 
--- sorry
 -- 0056
-theorem non_imp (P Q : Prop) : ¬(P → Q) ↔ P ∧ ¬Q :=
-  by
+theorem non_imp (P Q : Prop) : ¬(P → Q) ↔ P ∧ ¬Q := by
   -- sorry
   constructor
   · intro h
@@ -46,13 +44,12 @@ theorem non_imp (P Q : Prop) : ¬(P → Q) ↔ P ∧ ¬Q :=
     cases' h with hP hnQ
     exact hnQ (h' hP)
 #align non_imp non_imp
+  -- sorry
 
--- sorry
 -- In the next one, let's use the axiom
 -- propext {P Q : Prop} : (P ↔ Q) → P = Q
 -- 0057
-example (P : Prop) : ¬P ↔ P = False :=
-  by
+example (P : Prop) : ¬P ↔ P = False := by
   -- sorry
   constructor
   · intro h
@@ -66,8 +63,8 @@ example (P : Prop) : ¬P ↔ P = False :=
   · intro h
     rw [h]
     exact id
+  -- sorry
 
--- sorry
 end NegationProp
 
 section NegationQuantifiers
@@ -75,8 +72,7 @@ section NegationQuantifiers
 variable (X : Type) (P : X → Prop)
 
 -- 0058
-example : (¬∀ x, P x) ↔ ∃ x, ¬P x :=
-  by
+example : (¬∀ x, P x) ↔ ∃ x, ¬P x := by
   -- sorry
   constructor
   · intro h
@@ -88,11 +84,10 @@ example : (¬∀ x, P x) ↔ ∃ x, ¬P x :=
     use x, H'
   · rintro ⟨x, hx⟩ h'
     exact hx (h' x)
+  -- sorry
 
--- sorry
 -- 0059
-example : (¬∃ x, P x) ↔ ∀ x, ¬P x :=
-  by
+example : (¬∃ x, P x) ↔ ∀ x, ¬P x := by
   -- sorry
   constructor
   · intro h x h'
@@ -100,11 +95,10 @@ example : (¬∃ x, P x) ↔ ∀ x, ¬P x :=
     use x, h'
   · rintro h ⟨x, hx⟩
     exact h x hx
+  -- sorry
 
--- sorry
 -- 0060
-example (P : ℝ → Prop) : (¬∃ ε > 0, P ε) ↔ ∀ ε > 0, ¬P ε :=
-  by
+example (P : ℝ → Prop) : (¬∃ ε > 0, P ε) ↔ ∀ ε > 0, ¬P ε := by
   -- sorry
   constructor
   · intro h ε ε_pos hP
@@ -112,11 +106,10 @@ example (P : ℝ → Prop) : (¬∃ ε > 0, P ε) ↔ ∀ ε > 0, ¬P ε :=
     use ε, ε_pos, hP
   · rintro h ⟨ε, ε_pos, hP⟩
     exact h ε ε_pos hP
+  -- sorry
 
--- sorry
 -- 0061
-example (P : ℝ → Prop) : (¬∀ x > 0, P x) ↔ ∃ x > 0, ¬P x :=
-  by
+example (P : ℝ → Prop) : (¬∀ x > 0, P x) ↔ ∃ x > 0, ¬P x := by
   -- sorry
   constructor
   · intro h
@@ -128,7 +121,7 @@ example (P : ℝ → Prop) : (¬∀ x > 0, P x) ↔ ∃ x > 0, ¬P x :=
     use x, x_pos, HP
   · rintro ⟨x, xpos, hx⟩ h'
     exact hx (h' x xpos)
+  -- sorry
 
--- sorry
 end NegationQuantifiers
 

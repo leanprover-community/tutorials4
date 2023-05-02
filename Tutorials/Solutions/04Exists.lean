@@ -1,5 +1,5 @@
-import Mathbin.Data.Real.Basic
-import Mathbin.Data.Int.Parity
+import Mathlib.Data.Real.Basic
+import Mathlib.Data.Int.Parity
 
 /-
 In this file, we learn how to handle the ∃ quantifier.
@@ -27,8 +27,7 @@ one x₀ that works.
 Again h can come straight from the local context or can be a more
 complicated expression.
 -/
-example (n : ℕ) (h : ∃ k : ℕ, n = k + 1) : n > 0 :=
-  by
+example (n : ℕ) (h : ∃ k : ℕ, n = k + 1) : n > 0 := by
   -- Let's fix k₀ such that n = k₀ + 1.
   cases' h with k₀ hk₀
   -- It now suffices to prove k₀ + 1 > 0.
@@ -48,8 +47,7 @@ By definition, a ∣ b ↔ ∃ k, b = a*k, so you can prove a ∣ b using the
 variable (a b c : ℤ)
 
 -- 0029
-example (h₁ : a ∣ b) (h₂ : b ∣ c) : a ∣ c :=
-  by
+example (h₁ : a ∣ b) (h₂ : b ∣ c) : a ∣ c := by
   -- sorry
   cases' h₁ with k hk
   cases' h₂ with l hl
@@ -59,8 +57,8 @@ example (h₁ : a ∣ b) (h₂ : b ∣ c) : a ∣ c :=
     _ = a * k * l := by rw [hk]
     _ = a * (k * l) := by ring
 
+  -- sorry
 
--- sorry
 /-
 A very common pattern is to have an assumption or lemma asserting
   h : ∃ x, y = ...
@@ -72,8 +70,7 @@ and also simplifies the above combo when the name hx is replaced by the special
 name `rfl`, as in the following example.
 It uses the anonymous constructor angle brackets syntax.
 -/
-example (h1 : a ∣ b) (h2 : a ∣ c) : a ∣ b + c :=
-  by
+example (h1 : a ∣ b) (h2 : a ∣ c) : a ∣ b + c := by
   rcases h1 with ⟨k, rfl⟩
   rcases h2 with ⟨l, rfl⟩
   use k + l
@@ -82,15 +79,13 @@ example (h1 : a ∣ b) (h2 : a ∣ c) : a ∣ b + c :=
 /-
 You can use the same `rfl` trick with the `rintros` tactic.
 -/
-example : a ∣ b → a ∣ c → a ∣ b + c :=
-  by
+example : a ∣ b → a ∣ c → a ∣ b + c := by
   rintro ⟨k, rfl⟩ ⟨l, rfl⟩
   use k + l
   ring
 
 -- 0030
-example : 0 ∣ a ↔ a = 0 :=
-  by
+example : 0 ∣ a ↔ a = 0 := by
   -- sorry
   constructor
   · rintro ⟨k, rfl⟩
@@ -98,8 +93,8 @@ example : 0 ∣ a ↔ a = 0 :=
   · rintro rfl
     use 0
     rfl
+  -- sorry
 
--- sorry
 /-
 We can now start combining quantifiers, using the definition
 
@@ -113,25 +108,23 @@ open Function
 variable (f g : ℝ → ℝ)
 
 -- 0031
-example (h : Surjective (g ∘ f)) : Surjective g :=
-  by
+example (h : Surjective (g ∘ f)) : Surjective g := by
   -- sorry
   intro y
   rcases h y with ⟨w, rfl⟩
   use f w
+  -- sorry
 
--- sorry
 /-
 The above exercise can be done in three lines. Try to do the
 next exercise in four lines.
 -/
 -- 0032
-example (hf : Surjective f) (hg : Surjective g) : Surjective (g ∘ f) :=
-  by
+example (hf : Surjective f) (hg : Surjective g) : Surjective (g ∘ f) := by
   -- sorry
   intro z
   rcases hg z with ⟨y, rfl⟩
   rcases hf y with ⟨x, rfl⟩
   use x
+  -- sorry
 
--- sorry

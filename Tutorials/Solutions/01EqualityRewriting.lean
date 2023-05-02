@@ -1,4 +1,4 @@
-import Mathbin.Data.Real.Basic
+import Mathlib.Data.Real.Basic
 
 /-
 One of the earliest kind of proofs one encounters while learning mathematics is proving by
@@ -48,29 +48,26 @@ more powerful solutions.
 -- Uncomment the following line if you want to see parentheses around subexpressions.
 -- set_option pp.parens true
 -- set_option pp.parens true
-example (a b c : ℝ) : a * b * c = b * (a * c) :=
-  by
+example (a b c : ℝ) : a * b * c = b * (a * c) := by
   rw [mul_comm a b]
   rw [mul_assoc b a c]
 
 -- 0001
-example (a b c : ℝ) : c * b * a = b * (a * c) :=
-  by
+example (a b c : ℝ) : c * b * a = b * (a * c) := by
   -- sorry
   rw [mul_comm c b]
   rw [mul_assoc b c a]
   rw [mul_comm c a]
+  -- sorry
 
--- sorry
 -- 0002
-example (a b c : ℝ) : a * (b * c) = b * (a * c) :=
-  by
+example (a b c : ℝ) : a * (b * c) = b * (a * c) := by
   -- sorry
   rw [← mul_assoc a b c]
   rw [mul_comm a b]
   rw [mul_assoc b a c]
+  -- sorry
 
--- sorry
 /-
 Now let's return to the preceding example to experiment with what happens
 if we don't give arguments to mul_assoc or mul_comm.
@@ -79,15 +76,14 @@ For instance, you can start the next proof with
 Try to figure out what happens.
 -/
 -- 0003
-example (a b c : ℝ) : a * (b * c) = b * (a * c) :=
-  by
+example (a b c : ℝ) : a * (b * c) = b * (a * c) := by
   -- sorry
   rw [← mul_assoc]
   -- "rw mul_comm," doesn't do what we want.
   rw [mul_comm a b]
   rw [mul_assoc]
+  -- sorry
 
--- sorry
 /-
 We can also perform rewriting in an assumption of the local context, using for instance
   rw mul_comm a b at hyp,
@@ -98,8 +94,7 @@ The next example will use a third lemma:
 
 Also we use the `exact` tactic, which allows to provide a direct proof term.
 -/
-example (a b c d : ℝ) (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d :=
-  by
+example (a b c d : ℝ) (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d := by
   rw [hyp'] at hyp
   rw [mul_comm d a] at hyp
   rw [← two_mul (a * d)] at hyp
@@ -112,15 +107,14 @@ And the next one can use:
   sub_self x : x - x = 0
 -/
 -- 0004
-example (a b c d : ℝ) (hyp : c = b * a - d) (hyp' : d = a * b) : c = 0 :=
-  by
+example (a b c d : ℝ) (hyp : c = b * a - d) (hyp' : d = a * b) : c = 0 := by
   -- sorry
   rw [hyp'] at hyp
   rw [mul_comm b a] at hyp
   rw [sub_self (a * b)] at hyp
   exact hyp
+  -- sorry
 
--- sorry
 /-
 What is written in the two preceding example is very far away from what we would write on
 paper. Let's now see how to get a more natural layout.
@@ -149,16 +143,15 @@ From a practical point of view, when writing such a proof, it is convenient to:
 Let's return to the other example using this method.
 -/
 -- 0005
-example (a b c d : ℝ) (hyp : c = b * a - d) (hyp' : d = a * b) : c = 0 :=
-  by-- sorry
+example (a b c d : ℝ) (hyp : c = b * a - d) (hyp' : d = a * b) : c = 0 := by-- sorry
   calc
     c = b * a - d := by rw [hyp]
     _ = b * a - a * b := by rw [hyp']
     _ = a * b - a * b := by rw [mul_comm a b]
     _ = 0 := by rw [sub_self (a * b)]
 
+  -- sorry
 
--- sorry
 /-
 The preceding proofs have exhausted our supply of "mul_comm" patience. Now it's time
 to get the computer to work harder. The `ring` tactic will prove any goal that follows by
@@ -179,20 +172,18 @@ example (a b c d : ℝ) (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d
 Of course we can use `ring` outside of `calc`. Let's do the next one in one line.
 -/
 -- 0006
-example (a b c : ℝ) : a * (b * c) = b * (a * c) :=
-  by-- sorry
+example (a b c : ℝ) : a * (b * c) = b * (a * c) := by-- sorry
   ring
+  -- sorry
 
--- sorry
 /-
 This is too much fun. Let's do it again.
 -/
 -- 0007
-example (a b : ℝ) : a + b + a = 2 * a + b :=
-  by-- sorry
+example (a b : ℝ) : a + b + a = 2 * a + b := by-- sorry
   ring
+  -- sorry
 
--- sorry
 /-
 Maybe this is cheating. Let's try to do the next computation without ring.
 We could use:
@@ -204,8 +195,7 @@ sub_sub a b c : a - b - c = a - (b + c)
 add_zero a : a + 0 = a
 -/
 -- 0008
-example (a b : ℝ) : (a + b) * (a - b) = a ^ 2 - b ^ 2 :=
-  by
+example (a b : ℝ) : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by
   -- sorry
   rw [pow_two a]
   rw [pow_two b]
@@ -217,6 +207,6 @@ example (a b : ℝ) : (a + b) * (a - b) = a ^ 2 - b ^ 2 :=
   rw [← add_sub]
   rw [sub_self]
   rw [add_zero]
+  -- sorry
 
--- sorry
 -- Let's stick to ring in the end.

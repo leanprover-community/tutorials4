@@ -43,16 +43,14 @@ example {x : ℝ} : ¬x < x := by
 open Int
 
 -- 0045
-example (n : ℤ) (h_even : Even n) (h_not_even : ¬Even n) : 0 = 1 :=
-  by
+example (n : ℤ) (h_even : Even n) (h_not_even : ¬Even n) : 0 = 1 := by
   -- sorry
   exfalso
   exact h_not_even h_even
+  -- sorry
 
--- sorry
 -- 0046
-example (P Q : Prop) (h₁ : P ∨ Q) (h₂ : ¬(P ∧ Q)) : ¬P ↔ Q :=
-  by
+example (P Q : Prop) (h₁ : P ∨ Q) (h₂ : ¬(P ∧ Q)) : ¬P ↔ Q := by
   -- sorry
   constructor
   · intro hnP
@@ -62,8 +60,8 @@ example (P Q : Prop) (h₁ : P ∨ Q) (h₂ : ¬(P ∧ Q)) : ¬P ↔ Q :=
     · exact hQ
   · intro hQ hP
     exact h₂ ⟨hP, hQ⟩
+  -- sorry
 
--- sorry
 /-
 The definition of negation easily implies that, for every statement P,
 P → ¬ ¬ P
@@ -95,8 +93,7 @@ takes a list of definitions to unfold. For instance after using `let N₀ := max
 you could write `dsimp [N₀] at h` to replace `N₀` by its definition in some
 local assumption `h`.
 -/
-example (u : ℕ → ℝ) (l l' : ℝ) : SeqLimit u l → SeqLimit u l' → l = l' :=
-  by
+example (u : ℕ → ℝ) (l l' : ℝ) : SeqLimit u l → SeqLimit u l' → l = l' := by
   intro hl hl'
   by_contra H
   change l ≠ l' at H
@@ -125,20 +122,18 @@ non Q ⇒ non P.
 -/
 -- Using a proof by contradiction, let's prove the contraposition principle
 -- 0047
-example (P Q : Prop) (h : ¬Q → ¬P) : P → Q :=
-  by
+example (P Q : Prop) (h : ¬Q → ¬P) : P → Q := by
   -- sorry
   intro hP
   by_contra hnQ
   exact h hnQ hP
+  -- sorry
 
--- sorry
 /-
 Again Lean doesn't need this principle explained to it. We can use the
 `contrapose` tactic.
 -/
-example (P Q : Prop) (h : ¬Q → ¬P) : P → Q :=
-  by
+example (P Q : Prop) (h : ¬Q → ¬P) : P → Q := by
   contrapose
   exact h
 
@@ -148,8 +143,7 @@ In the next exercise, we'll use
  int.odd_iff_not_even {n : ℤ} : odd n ↔ ¬ even n
 -/
 -- 0048
-example (n : ℤ) : Even (n ^ 2) ↔ Even n :=
-  by
+example (n : ℤ) : Even (n ^ 2) ↔ Even n := by
   -- sorry
   constructor
   · contrapose
@@ -161,8 +155,8 @@ example (n : ℤ) : Even (n ^ 2) ↔ Even n :=
   · rintro ⟨k, rfl⟩
     use 2 * k ^ 2
     ring
+  -- sorry
 
--- sorry
 /-
 As a last step on our law of the excluded middle tour, let's notice that, especially
 in pure logic exercises, it can sometimes be useful to use the
@@ -198,8 +192,7 @@ example : P → Q ↔ ¬P ∨ Q := by
     · exact hQ
 
 -- 0049
-example : ¬(P ∧ Q) ↔ ¬P ∨ ¬Q :=
-  by
+example : ¬(P ∧ Q) ↔ ¬P ∨ ¬Q := by
   -- sorry
   constructor
   · intro h
@@ -213,24 +206,23 @@ example : ¬(P ∧ Q) ↔ ¬P ∨ ¬Q :=
     cases' h with hnP hnQ
     · exact hnP hP
     · exact hnQ hQ
+  -- sorry
 
--- sorry
 /-
 It is crucial to understand negation of quantifiers.
 Let's do it by hand for a little while.
 In the first exercise, only the definition of negation is needed.
 -/
 -- 0050
-example (n : ℤ) : (¬∃ k, n = 2 * k) ↔ ∀ k, n ≠ 2 * k :=
-  by
+example (n : ℤ) : (¬∃ k, n = 2 * k) ↔ ∀ k, n ≠ 2 * k := by
   -- sorry
   constructor
   · intro hyp k hk
     exact hyp ⟨k, hk⟩
   · rintro hyp ⟨k, rfl⟩
     exact hyp k rfl
+  -- sorry
 
--- sorry
 /-
 Contrary to negation of the existential quantifier, negation of the
 universal quantifier requires excluded middle for the first implication.
@@ -243,8 +235,7 @@ def EvenFun (f : ℝ → ℝ) :=
 #align even_fun EvenFun
 
 -- 0051
-example (f : ℝ → ℝ) : ¬EvenFun f ↔ ∃ x, f (-x) ≠ f x :=
-  by
+example (f : ℝ → ℝ) : ¬EvenFun f ↔ ∃ x, f (-x) ≠ f x := by
   -- sorry
   constructor
   · contrapose
@@ -264,8 +255,8 @@ example (f : ℝ → ℝ) : ¬EvenFun f ↔ ∃ x, f (-x) ≠ f x :=
       use x, -/
   · rintro ⟨x, hx⟩ h'
     exact hx (h' x)
+  -- sorry
 
--- sorry
 /-
 Of course we can't keep repeating the above proofs, especially the second one.
 So we use the `push_neg` tactic.
@@ -278,13 +269,12 @@ example : ¬EvenFun fun x => 2 * x := by
   linarith
 
 -- 0052
-example (f : ℝ → ℝ) : ¬EvenFun f ↔ ∃ x, f (-x) ≠ f x :=
-  by
+example (f : ℝ → ℝ) : ¬EvenFun f ↔ ∃ x, f (-x) ≠ f x := by
   -- sorry
   unfold EvenFun
   push_neg
+  -- sorry
 
--- sorry
 def BoundedAbove (f : ℝ → ℝ) :=
   ∃ M, ∀ x, f x ≤ M
 #align bounded_above BoundedAbove
@@ -298,16 +288,15 @@ example : ¬BoundedAbove fun x => x := by
 
 -- Let's contrapose
 -- 0053
-example (x : ℝ) : (∀ ε > 0, x ≤ ε) → x ≤ 0 :=
-  by
+example (x : ℝ) : (∀ ε > 0, x ≤ ε) → x ≤ 0 := by
   -- sorry
   contrapose
   push_neg
   intro h
   use x / 2
   constructor <;> linarith
+  -- sorry
 
--- sorry
 /-
 The "contrapose, push_neg" combo is so common that we can abreviate it to
 `contrapose!`
@@ -316,8 +305,7 @@ Let's use this trick, together with:
   eq_or_lt_of_le : a ≤ b → a = b ∨ a < b
 -/
 -- 0054
-example (f : ℝ → ℝ) : (∀ x y, x < y → f x < f y) ↔ ∀ x y, x ≤ y ↔ f x ≤ f y :=
-  by
+example (f : ℝ → ℝ) : (∀ x y, x < y → f x < f y) ↔ ∀ x y, x ≤ y ↔ f x ≤ f y := by
   -- sorry
   constructor
   · intro hf x y
@@ -332,5 +320,5 @@ example (f : ℝ → ℝ) : (∀ x y, x < y → f x < f y) ↔ ∀ x y, x ≤ y 
     contrapose!
     intro h
     rwa [hf]
+  -- sorry
 
--- sorry

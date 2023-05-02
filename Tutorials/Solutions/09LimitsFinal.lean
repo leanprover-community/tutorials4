@@ -28,8 +28,7 @@ as well as a lemma from the previous file:
 Let's start with a variation on a known exercise.
 -/
 -- 0071
-theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∃ N, ∀ n ≥ N, y ≤ u n) : y ≤ x :=
-  by
+theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∃ N, ∀ n ≥ N, y ≤ u n) : y ≤ x := by
   -- sorry
   apply le_of_le_add_all
   intro ε ε_pos
@@ -41,8 +40,8 @@ theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∃ N, 
   rw [abs_le] at hN
   linarith
 #align le_lim le_lim
+  -- sorry
 
--- sorry
 /-
 Let's now return to the result proved in the `00_` file of this series,
 and prove again the sequential characterization of upper bounds (with a slighly
@@ -91,8 +90,7 @@ after using it should be enough to understand everything).
 -/
 -- 0072
 theorem isSup_iff (A : Set ℝ) (x : ℝ) :
-    IsSup A x ↔ UpperBound A x ∧ ∃ u : ℕ → ℝ, SeqLimit u x ∧ ∀ n, u n ∈ A :=
-  by
+    IsSup A x ↔ UpperBound A x ∧ ∃ u : ℕ → ℝ, SeqLimit u x ∧ ∀ n, u n ∈ A := by
   constructor
   · intro h
     constructor
@@ -128,8 +126,8 @@ theorem isSup_iff (A : Set ℝ) (x : ℝ) :
       apply ymaj
       apply u_in
 #align is_sup_iff isSup_iff
+  -- sorry
 
--- sorry
 /-- Continuity of a function at a point  -/
 def ContinuousAtPt (f : ℝ → ℝ) (x₀ : ℝ) : Prop :=
   ∀ ε > 0, ∃ δ > 0, ∀ x, |x - x₀| ≤ δ → |f x - f x₀| ≤ ε
@@ -139,8 +137,7 @@ variable {f : ℝ → ℝ} {x₀ : ℝ} {u : ℕ → ℝ}
 
 -- 0073
 theorem seq_continuous_of_continuous (hf : ContinuousAtPt f x₀) (hu : SeqLimit u x₀) :
-    SeqLimit (f ∘ u) (f x₀) :=
-  by
+    SeqLimit (f ∘ u) (f x₀) := by
   -- sorry
   intro ε ε_pos
   rcases hf ε ε_pos with ⟨δ, δ_pos, hδ⟩
@@ -150,11 +147,10 @@ theorem seq_continuous_of_continuous (hf : ContinuousAtPt f x₀) (hu : SeqLimit
   apply hδ
   exact hN n hn
 #align seq_continuous_of_continuous seq_continuous_of_continuous
+  -- sorry
 
--- sorry
 -- 0074
-example : (∀ u : ℕ → ℝ, SeqLimit u x₀ → SeqLimit (f ∘ u) (f x₀)) → ContinuousAtPt f x₀ :=
-  by
+example : (∀ u : ℕ → ℝ, SeqLimit u x₀ → SeqLimit (f ∘ u) (f x₀)) → ContinuousAtPt f x₀ := by
   -- sorry
   contrapose!
   intro hf
@@ -187,8 +183,8 @@ example : (∀ u : ℕ → ℝ, SeqLimit u x₀ → SeqLimit (f ∘ u) (f x₀))
   constructor
   linarith
   exact (hu N).right
+  -- sorry
 
--- sorry
 /-
 Recall from the 6th file:
 
@@ -211,8 +207,7 @@ variable {φ : ℕ → ℕ}
 
 -- 0075
 theorem subseq_tendstoinfinity (h : TendstoInfinity u) (hφ : Extraction φ) :
-    TendstoInfinity (u ∘ φ) :=
-  by
+    TendstoInfinity (u ∘ φ) := by
   -- sorry
   intro A
   cases' h A with N hN
@@ -224,12 +219,11 @@ theorem subseq_tendstoinfinity (h : TendstoInfinity u) (hφ : Extraction φ) :
     _ ≤ φ n := id_le_extraction hφ n
 
 #align subseq_tendstoinfinity subseq_tendstoinfinity
+  -- sorry
 
--- sorry
 -- 0076
 theorem squeeze_infinity {u v : ℕ → ℝ} (hu : TendstoInfinity u) (huv : ∀ n, u n ≤ v n) :
-    TendstoInfinity v :=
-  by
+    TendstoInfinity v := by
   -- sorry
   intro A
   cases' hu A with N hN
@@ -239,8 +233,8 @@ theorem squeeze_infinity {u v : ℕ → ℝ} (hu : TendstoInfinity u) (huv : ∀
   specialize huv n
   linarith
 #align squeeze_infinity squeeze_infinity
+  -- sorry
 
--- sorry
 /-
 We will use segments: Icc a b := { x | a ≤ x ∧ x ≤ b }
 The notation stands for Interval-closed-closed. Variations exist with
@@ -259,8 +253,7 @@ open Set
 
 -- 0077
 theorem bdd_above_segment {f : ℝ → ℝ} {a b : ℝ} (hf : ∀ x ∈ Icc a b, ContinuousAtPt f x) :
-    ∃ M, ∀ x ∈ Icc a b, f x ≤ M :=
-  by
+    ∃ M, ∀ x ∈ Icc a b, f x ≤ M := by
   -- sorry
   by_contra H
   push_neg  at H
@@ -282,8 +275,8 @@ theorem bdd_above_segment {f : ℝ → ℝ} {a b : ℝ} (hf : ∀ x ∈ Icc a b,
   have lim_extr : SeqLimit (f ∘ u ∘ φ) (f c) := seq_continuous_of_continuous (hf c c_dans) limUnder
   exact not_seqLimit_of_tendstoinfinity lim_infinie_extr (f c) lim_extr
 #align bdd_above_segment bdd_above_segment
+  -- sorry
 
--- sorry
 /-
 In the next exercise, we can use:
 
@@ -291,8 +284,7 @@ In the next exercise, we can use:
 -/
 -- 0078
 theorem continuous_opposite {f : ℝ → ℝ} {x₀ : ℝ} (h : ContinuousAtPt f x₀) :
-    ContinuousAtPt (fun x => -f x) x₀ :=
-  by
+    ContinuousAtPt (fun x => -f x) x₀ := by
   -- sorry
   intro ε ε_pos
   cases' h ε ε_pos with δ h
@@ -303,15 +295,14 @@ theorem continuous_opposite {f : ℝ → ℝ} {x₀ : ℝ} (h : ContinuousAtPt f
   rw [this, abs_neg]
   exact h y hy
 #align continuous_opposite continuous_opposite
+  -- sorry
 
--- sorry
 /-
 Now let's combine the two exercises above
 -/
 -- 0079
 theorem bdd_below_segment {f : ℝ → ℝ} {a b : ℝ} (hf : ∀ x ∈ Icc a b, ContinuousAtPt f x) :
-    ∃ m, ∀ x ∈ Icc a b, m ≤ f x :=
-  by
+    ∃ m, ∀ x ∈ Icc a b, m ≤ f x := by
   -- sorry
   have : ∃ M, ∀ x ∈ Icc a b, -f x ≤ M :=
     by
@@ -324,8 +315,8 @@ theorem bdd_below_segment {f : ℝ → ℝ} {a b : ℝ} (hf : ∀ x ∈ Icc a b,
   specialize hM x x_dans
   linarith
 #align bdd_below_segment bdd_below_segment
+  -- sorry
 
--- sorry
 /-
 Remember from the 5th file:
 
@@ -357,8 +348,7 @@ Hence `x' ∈ { x | P x} ↔ P x'`, by definition.
 -/
 -- 0080
 example {a b : ℝ} (hab : a ≤ b) (hf : ∀ x ∈ Icc a b, ContinuousAtPt f x) :
-    ∃ x₀ ∈ Icc a b, ∀ x ∈ Icc a b, f x ≤ f x₀ :=
-  by
+    ∃ x₀ ∈ Icc a b, ∀ x ∈ Icc a b, f x ≤ f x₀ := by
   -- sorry
   cases' bdd_below_segment hf with m hm
   cases' bdd_above_segment hf with M hM
@@ -389,8 +379,8 @@ example {a b : ℝ} (hab : a ≤ b) (hf : ∀ x ∈ Icc a b, ContinuousAtPt f x)
   rw [Unique]
   apply y_maj
   use x, x_dans
+  -- sorry
 
--- sorry
 theorem stupid {a b x : ℝ} (h : x ∈ Icc a b) (h' : x ≠ b) : x < b :=
   lt_of_le_of_ne h.right h'
 #align stupid stupid

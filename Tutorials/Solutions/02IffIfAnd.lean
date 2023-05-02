@@ -1,4 +1,4 @@
-import Mathbin.Data.Real.Basic
+import Mathlib.Data.Real.Basic
 
 /-
 In the previous file, we saw how to rewrite using equalities.
@@ -44,8 +44,7 @@ This triggers the apparition of a new goal: proving the statement. After this is
 the statement becomes available under the name `my_name`.
 We can focus on the current goal by typing tactics between curly braces.
 -/
-example {a b c : ℝ} (hab : a ≤ b) : c + a ≤ c + b :=
-  by
+example {a b c : ℝ} (hab : a ≤ b) : c + a ≤ c + b := by
   rw [← sub_nonneg]
   have key : c + b - (c + a) = b - a :=
     by-- Here we introduce an intermediate statement named key
@@ -62,16 +61,15 @@ Of course the previous lemma is already in the core library, named `add_le_add_l
 Let's prove a variation (without invoking commutativity of addition since this would spoil our fun).
 -/
 -- 0009
-example {a b : ℝ} (hab : a ≤ b) (c : ℝ) : a + c ≤ b + c :=
-  by
+example {a b : ℝ} (hab : a ≤ b) (c : ℝ) : a + c ≤ b + c := by
   -- sorry
   have key : b + c - (a + c) = b - a := by ring
   rw [← sub_nonneg]
   rw [key]
   rw [sub_nonneg]
   exact hab
+  -- sorry
 
--- sorry
 /-
 Let's see how we could use this lemma. It is already in the core library, under the name `add_le_add_right`:
 
@@ -105,14 +103,13 @@ example (a b : ℝ) (ha : 0 ≤ a) : b ≤ a + b := by
 
 -- Let's do a variant.
 -- 0010
-example (a b : ℝ) (hb : 0 ≤ b) : a ≤ a + b :=
-  by-- sorry
+example (a b : ℝ) (hb : 0 ≤ b) : a ≤ a + b := by-- sorry
   calc
     a = a + 0 := by ring
     _ ≤ a + b := add_le_add_left hb a
 
+  -- sorry
 
--- sorry
 /-
 The two preceding examples are in the core library :
 
@@ -135,24 +132,22 @@ transitivity of inequalities will be used automatically to assemble
 the pieces.
 -/
 -- 0011
-example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a + b :=
-  by-- sorry
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a + b := by-- sorry
   calc
     0 ≤ a := ha
     _ ≤ a + b := le_add_of_nonneg_right hb
 
+  -- sorry
 
--- sorry
 -- And let's combine with our earlier lemmas.
 -- 0012
-example (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) : a + c ≤ b + d :=
-  by-- sorry
+example (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) : a + c ≤ b + d := by-- sorry
   calc
     a + c ≤ b + c := add_le_add_right hab c
     _ ≤ b + d := add_le_add_left hcd b
 
+  -- sorry
 
--- sorry
 /-
 In the above examples, we prepared proofs of assumptions of our lemmas beforehand, so
 that we could feed them to the lemmas. This is called forward reasoning.
@@ -167,8 +162,7 @@ Let's do that using the lemma
 
   mul_nonneg {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) : 0 ≤ x*y
 -/
-example (a b c : ℝ) (hc : 0 ≤ c) (hab : a ≤ b) : a * c ≤ b * c :=
-  by
+example (a b c : ℝ) (hc : 0 ≤ c) (hab : a ≤ b) : a * c ≤ b * c := by
   rw [← sub_nonneg]
   have key : b * c - a * c = (b - a) * c := by ring
   rw [key]
@@ -183,8 +177,7 @@ example (a b c : ℝ) (hc : 0 ≤ c) (hab : a ≤ b) : a * c ≤ b * c :=
 Let's prove the same statement using only forward reasoning: announcing stuff,
 proving it by working with known facts, moving forward.
 -/
-example (a b c : ℝ) (hc : 0 ≤ c) (hab : a ≤ b) : a * c ≤ b * c :=
-  by
+example (a b c : ℝ) (hc : 0 ≤ c) (hab : a ≤ b) : a * c ≤ b * c := by
   have hab' : 0 ≤ b - a := by
     rw [← sub_nonneg] at hab
     exact hab
@@ -207,8 +200,7 @@ To be fair to the forward reasoning version, we should introduce a convenient
 variation on `rw`. The `rwa` tactic performs rewrite and then looks for an
 assumption matching the goal. We can use it to rewrite our latest proof as:
 -/
-example (a b c : ℝ) (hc : 0 ≤ c) (hab : a ≤ b) : a * c ≤ b * c :=
-  by
+example (a b c : ℝ) (hc : 0 ≤ c) (hab : a ≤ b) : a * c ≤ b * c := by
   have hab' : 0 ≤ b - a := by rwa [← sub_nonneg] at hab
   have h₁ : 0 ≤ (b - a) * c := mul_nonneg hab' hc
   have h₂ : (b - a) * c = b * c - a * c := by ring
@@ -220,8 +212,7 @@ Let's now combine forward and backward reasoning, to get our most
 efficient proof of this statement. Note in particular how unification is used
 to know what to prove inside the parentheses in the `mul_nonneg` arguments.
 -/
-example (a b c : ℝ) (hc : 0 ≤ c) (hab : a ≤ b) : a * c ≤ b * c :=
-  by
+example (a b c : ℝ) (hc : 0 ≤ c) (hab : a ≤ b) : a * c ≤ b * c := by
   rw [← sub_nonneg]
   calc
     0 ≤ (b - a) * c := mul_nonneg (by rwa [sub_nonneg]) hc
@@ -237,8 +228,7 @@ Let's now practice all three styles using:
 -/
 -- First using mostly backward reasoning
 -- 0013
-example (a b c : ℝ) (hc : c ≤ 0) (hab : a ≤ b) : b * c ≤ a * c :=
-  by
+example (a b c : ℝ) (hc : c ≤ 0) (hab : a ≤ b) : b * c ≤ a * c := by
   -- sorry
   rw [← sub_nonneg]
   have fact : a * c - b * c = (a - b) * c
@@ -247,24 +237,22 @@ example (a b c : ℝ) (hc : c ≤ 0) (hab : a ≤ b) : b * c ≤ a * c :=
   apply mul_nonneg_of_nonpos_of_nonpos
   · rwa [sub_nonpos]
   · exact hc
+  -- sorry
 
--- sorry
 -- Using forward reasoning
 -- 0014
-example (a b c : ℝ) (hc : c ≤ 0) (hab : a ≤ b) : b * c ≤ a * c :=
-  by
+example (a b c : ℝ) (hc : c ≤ 0) (hab : a ≤ b) : b * c ≤ a * c := by
   -- sorry
   have hab' : a - b ≤ 0 := by rwa [← sub_nonpos] at hab
   have h₁ : 0 ≤ (a - b) * c := mul_nonneg_of_nonpos_of_nonpos hab' hc
   have h₂ : (a - b) * c = a * c - b * c := by ring
   have h₃ : 0 ≤ a * c - b * c := by rwa [h₂] at h₁
   rwa [sub_nonneg] at h₃
+  -- sorry
 
--- sorry
 -- 0015
 /-- Using a combination of both, with a `calc` block -/
-example (a b c : ℝ) (hc : c ≤ 0) (hab : a ≤ b) : b * c ≤ a * c :=
-  by
+example (a b c : ℝ) (hc : c ≤ 0) (hab : a ≤ b) : b * c ≤ a * c := by
   -- sorry
   have hab' : a - b ≤ 0 := by rwa [sub_nonpos]
   rw [← sub_nonneg]
@@ -272,8 +260,8 @@ example (a b c : ℝ) (hc : c ≤ 0) (hab : a ≤ b) : b * c ≤ a * c :=
     0 ≤ (a - b) * c := mul_nonneg_of_nonpos_of_nonpos hab' hc
     _ = a * c - b * c := by ring
 
+  -- sorry
 
--- sorry
 /-
 Let's now move to proving implications. Lean denotes implications using
 a simple arrow →, the same it uses for functions (say denoting the type of functions
@@ -309,16 +297,15 @@ tactic mode using `begin` or `by`.
 
 Let's practise using `intros`. -/
 -- 0016
-example (a b : ℝ) : 0 ≤ b → a ≤ a + b :=
-  by
+example (a b : ℝ) : 0 ≤ b → a ≤ a + b := by
   -- sorry
   intro hb
   calc
     a = a + 0 := by ring
     _ ≤ a + b := add_le_add_left hb a
 
+  -- sorry
 
--- sorry
 /-
 What about lemmas having more than one assumption? For instance:
 
@@ -328,8 +315,7 @@ A natural idea is to use the conjunction operator (logical AND), which Lean deno
 by ∧. Assumptions built using this operator can be decomposed using the `cases` tactic,
 which is a very general assumption-decomposing tactic.
 -/
-example {a b : ℝ} : 0 ≤ a ∧ 0 ≤ b → 0 ≤ a + b :=
-  by
+example {a b : ℝ} : 0 ≤ a ∧ 0 ≤ b → 0 ≤ a + b := by
   intro hyp
   cases' hyp with ha hb
   exact add_nonneg ha hb
@@ -351,8 +337,7 @@ Let's prove that the naive conjunction version implies the funny Lean version. F
 to know how to prove a conjunction. The `split` tactic creates two goals from a conjunction goal.
 It can also be used to create two implication goals from an equivalence goal.
 -/
-example {a b : ℝ} (H : 0 ≤ a ∧ 0 ≤ b → 0 ≤ a + b) : 0 ≤ a → 0 ≤ b → 0 ≤ a + b :=
-  by
+example {a b : ℝ} (H : 0 ≤ a ∧ 0 ≤ b → 0 ≤ a + b) : 0 ≤ a → 0 ≤ b → 0 ≤ a + b := by
   intro ha
   intro hb
   apply H
@@ -365,16 +350,15 @@ Let's practice `cases` and `split`. In the next exercise, P, Q and R denote
 unspecified mathematical statements.
 -/
 -- 0017
-example (P Q R : Prop) : P ∧ Q → Q ∧ P :=
-  by
+example (P Q R : Prop) : P ∧ Q → Q ∧ P := by
   -- sorry
   intro hyp
   cases' hyp with hP hQ
   constructor
   exact hQ
   exact hP
+  -- sorry
 
--- sorry
 /-
 Of course using `split` only to be able to use `exact` twice in a row feels silly. One can
 also use the anonymous constructor syntax: ⟨ ⟩
@@ -386,8 +370,7 @@ So we could have replaced the last three lines by:
 
 We can also combine the `intros` steps. We can now compress our earlier proof to:
 -/
-example {a b : ℝ} (H : 0 ≤ a ∧ 0 ≤ b → 0 ≤ a + b) : 0 ≤ a → 0 ≤ b → 0 ≤ a + b :=
-  by
+example {a b : ℝ} (H : 0 ≤ a ∧ 0 ≤ b → 0 ≤ a + b) : 0 ≤ a → 0 ≤ b → 0 ≤ a + b := by
   intro ha hb
   exact H ⟨ha, hb⟩
 
@@ -400,29 +383,27 @@ by
   rintros ⟨h₁, h₂⟩,
 Now redo the previous exercise using all those compressing techniques, in exactly two lines. -/
 -- 0018
-example (P Q R : Prop) : P ∧ Q → Q ∧ P :=
-  by
+example (P Q R : Prop) : P ∧ Q → Q ∧ P := by
   -- sorry
   rintro ⟨hP, hQ⟩
   exact ⟨hQ, hP⟩
+  -- sorry
 
--- sorry
 /-
 We are ready to come back to the equivalence between the different formulations of
 lemmas having two assumptions. Remember the `split` tactic can be used to split
 an equivalence into two implications.
 -/
 -- 0019
-example (P Q R : Prop) : P ∧ Q → R ↔ P → Q → R :=
-  by
+example (P Q R : Prop) : P ∧ Q → R ↔ P → Q → R := by
   -- sorry
   constructor
   · intro hyp hP hQ
     exact hyp ⟨hP, hQ⟩
   · rintro hyp ⟨hP, hQ⟩
     exact hyp hP hQ
+  -- sorry
 
--- sorry
 /-
 If you used more than five lines in the above exercise then try to compress things
 (without simply removing line ends).
@@ -446,18 +427,16 @@ example (a b : ℝ) (hb : 0 ≤ b) : a ≤ a + b := by linarith
 Now let's enjoy this for a while.
 -/
 -- 0020
-example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a + b :=
-  by-- sorry
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a + b := by-- sorry
   linarith
+  -- sorry
 
--- sorry
 -- And let's combine with our earlier lemmas.
 -- 0021
-example (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) : a + c ≤ b + d :=
-  by-- sorry
+example (a b c d : ℝ) (hab : a ≤ b) (hcd : c ≤ d) : a + c ≤ b + d := by-- sorry
   linarith
+  -- sorry
 
--- sorry
 /-
 Final exercise
 
@@ -478,8 +457,7 @@ only use the following three lemmas:
 open Nat
 
 -- 0022
-example (a b : ℕ) : a ∣ b ↔ gcd a b = a :=
-  by
+example (a b : ℕ) : a ∣ b ↔ gcd a b = a := by
   -- sorry
   have fact : gcd a b ∣ a ∧ gcd a b ∣ b := by rw [← dvd_gcd_iff]
   constructor
@@ -490,5 +468,5 @@ example (a b : ℕ) : a ∣ b ↔ gcd a b = a :=
   · intro h
     rw [← h]
     exact fact.right
+  -- sorry
 
--- sorry

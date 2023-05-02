@@ -38,8 +38,7 @@ in this tutorial. If you did the natural number game then you can delete
 the proof below and try to reconstruct it.
 -/
 /-- An extraction is greater than id -/
-theorem id_le_extraction' : Extraction φ → ∀ n, n ≤ φ n :=
-  by
+theorem id_le_extraction' : Extraction φ → ∀ n, n ≤ φ n := by
   intro hyp n
   induction' n with n hn
   · exact Nat.zero_le _
@@ -49,8 +48,7 @@ theorem id_le_extraction' : Extraction φ → ∀ n, n ≤ φ n :=
 -- 0039
 /-- Extractions take arbitrarily large values for arbitrarily large
 inputs. -/
-theorem extraction_ge : Extraction φ → ∀ N N', ∃ n ≥ N', φ n ≥ N :=
-  by
+theorem extraction_ge : Extraction φ → ∀ N N', ∃ n ≥ N', φ n ≥ N := by
   -- sorry
   intro h N N'
   use max N N'
@@ -61,8 +59,8 @@ theorem extraction_ge : Extraction φ → ∀ N N', ∃ n ≥ N', φ n ≥ N :=
     _ ≤ φ (max N N') := by apply id_le_extraction' h
 
 #align extraction_ge extraction_ge
+  -- sorry
 
--- sorry
 variable {u : ℕ → ℝ} {a l : ℝ}
 
 /-
@@ -76,8 +74,7 @@ One gets used to it. Alternatively, one can get rid of it using the lemma
 -- 0040
 /-- If `a` is a cluster point of `u` then there are values of
 `u` arbitrarily close to `a` for arbitrarily large input. -/
-theorem near_cluster : ClusterPoint u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n - a| ≤ ε :=
-  by
+theorem near_cluster : ClusterPoint u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n - a| ≤ ε := by
   -- sorry
   intro hyp ε ε_pos N
   rcases hyp with ⟨φ, φ_extr, hφ⟩
@@ -85,8 +82,8 @@ theorem near_cluster : ClusterPoint u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n
   rcases extraction_ge φ_extr N N' with ⟨q, hq, hq'⟩
   exact ⟨φ q, hq', hN' _ hq⟩
 #align near_cluster near_cluster
+  -- sorry
 
--- sorry
 /-
 The above exercice can be done in five lines.
 Hint: you can use the anonymous constructor syntax when proving
@@ -94,8 +91,7 @@ existential statements.
 -/
 -- 0041
 /-- If `u` tends to `l` then its subsequences tend to `l`. -/
-theorem subseq_tendsto_of_tendsto' (h : SeqLimit u l) (hφ : Extraction φ) : SeqLimit (u ∘ φ) l :=
-  by
+theorem subseq_tendsto_of_tendsto' (h : SeqLimit u l) (hφ : Extraction φ) : SeqLimit (u ∘ φ) l := by
   -- sorry
   intro ε ε_pos
   cases' h ε ε_pos with N hN
@@ -107,27 +103,25 @@ theorem subseq_tendsto_of_tendsto' (h : SeqLimit u l) (hφ : Extraction φ) : Se
     _ ≤ φ n := id_le_extraction' hφ n
 
 #align subseq_tendsto_of_tendsto' subseq_tendsto_of_tendsto'
+  -- sorry
 
--- sorry
 -- 0042
 /-- If `u` tends to `l` all its cluster points are equal to `l`. -/
-theorem cluster_limit (hl : SeqLimit u l) (ha : ClusterPoint u a) : a = l :=
-  by
+theorem cluster_limit (hl : SeqLimit u l) (ha : ClusterPoint u a) : a = l := by
   -- sorry
   rcases ha with ⟨φ, φ_extr, lim_u_φ⟩
   have lim_u_φ' : SeqLimit (u ∘ φ) l := subseq_tendsto_of_tendsto' hl φ_extr
   exact unique_limit lim_u_φ lim_u_φ'
 #align cluster_limit cluster_limit
+  -- sorry
 
--- sorry
 /-- Cauchy_sequence sequence -/
 def CauchySequence (u : ℕ → ℝ) :=
   ∀ ε > 0, ∃ N, ∀ p q, p ≥ N → q ≥ N → |u p - u q| ≤ ε
 #align cauchy_sequence CauchySequence
 
 -- 0043
-example : (∃ l, SeqLimit u l) → CauchySequence u :=
-  by
+example : (∃ l, SeqLimit u l) → CauchySequence u := by
   -- sorry
   intro hyp
   cases' hyp with l hl
@@ -141,15 +135,14 @@ example : (∃ l, SeqLimit u l) → CauchySequence u :=
     _ = |u p - l| + |u q - l| := by rw [abs_sub_comm (u q) l]
     _ ≤ ε := by linarith [hN p hp, hN q hq]
 
+  -- sorry
 
--- sorry
 /-
 In the next exercise, you can reuse
  near_cluster : cluster_point u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n - a| ≤ ε
 -/
 -- 0044
-example (hu : CauchySequence u) (hl : ClusterPoint u l) : SeqLimit u l :=
-  by
+example (hu : CauchySequence u) (hl : ClusterPoint u l) : SeqLimit u l := by
   -- sorry
   intro ε ε_pos
   cases' hu (ε / 2) (by linarith) with N hN
@@ -164,5 +157,5 @@ example (hu : CauchySequence u) (hl : ClusterPoint u l) : SeqLimit u l :=
     _ ≤ |u n - u N'| + |u N' - l| := by apply abs_add
     _ ≤ ε := by linarith [hN n N' (by linarith) hNN']
 
+  -- sorry
 
--- sorry

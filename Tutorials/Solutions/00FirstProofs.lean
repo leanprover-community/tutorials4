@@ -5,8 +5,8 @@ Everything is covered again more slowly and with exercises in the next files.
 
 ! This file was ported from Lean 3 source module main
 -/
-import Mathbin.Data.Real.Basic
-import Mathbin.Tactic.Suggest
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.Suggest
 
 -- We want real numbers and their basic properties
 -- We want to be able to use Lean's built-in "help" functionality
@@ -60,8 +60,7 @@ Let's prove something now! A set of real numbers has at most one maximum. Here
 everything left of the final `:` is introducing the objects and assumption. The equality
 `x = y` right of the colon is the conclusion.
 -/
-theorem unique_max (A : Set ℝ) (x y : ℝ) (hx : x is_a_max_of A) (hy : y is_a_max_of A) : x = y :=
-  by
+theorem unique_max (A : Set ℝ) (x y : ℝ) (hx : x is_a_max_of A) (hy : y is_a_max_of A) : x = y := by
   -- We first break our assumptions in their two constituent pieces.
   -- We are free to choose the name following `with`
   cases' hx with x_in x_up
@@ -87,8 +86,7 @@ readability without assistance from the tactic state display, clearly announcing
 intermediate goals using `have`. This way we get to the following version of the
 same proof.
 -/
-example (A : Set ℝ) (x y : ℝ) (hx : x is_a_max_of A) (hy : y is_a_max_of A) : x = y :=
-  by
+example (A : Set ℝ) (x y : ℝ) (hx : x is_a_max_of A) (hy : y is_a_max_of A) : x = y := by
   have : x ≤ y := hy.2 x hx.1
   have : y ≤ x := hx.2 y hy.1
   linarith
@@ -151,8 +149,7 @@ infixl:55 " is_an_inf_of " => IsInf
 We need to prove that any number which is greater than the infimum of A is greater
 than some element of A.
 -/
-theorem inf_lt {A : Set ℝ} {x : ℝ} (hx : x is_an_inf_of A) : ∀ y, x < y → ∃ a ∈ A, a < y :=
-  by
+theorem inf_lt {A : Set ℝ} {x : ℝ} (hx : x is_an_inf_of A) : ∀ y, x < y → ∃ a ∈ A, a < y := by
   -- Let `y` be any real number.
   intro y
   -- Let's prove the contrapositive
@@ -177,8 +174,7 @@ the computer to handle tedious proof steps. In the next proof, we'll start using
 Our next real goal is to prove inequalities for limits of sequences. We extract the
 following lemma: if `y ≤ x + ε` for all positive `ε` then `y ≤ x`.
 -/
-theorem le_of_le_add_eps {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x :=
-  by
+theorem le_of_le_add_eps {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x := by
   -- Let's prove the contrapositive, asking Lean to push negations right away.
   contrapose!
   -- Assume `h : x < y`.
@@ -199,8 +195,7 @@ writing `split ; linarith`.
 
 Next we will study a compressed version of that proof:
 -/
-example {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x :=
-  by
+example {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x := by
   contrapose!
   exact fun h => ⟨(y - x) / 2, by linarith, by linarith⟩
 
@@ -222,8 +217,7 @@ crucially use automation with `contrapose!` and `linarith`. We can still get a o
 proof using curly braces to gather several tactic invocations, and the `by` abbreviation
 instead of `begin`/`end`:
 -/
-example {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x :=
-  by
+example {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x := by
   contrapose!
   exact fun h => ⟨(y - x) / 2, by linarith, by linarith⟩
 
@@ -233,8 +227,7 @@ on linarith. Let's have more `linarith` calls for smaller steps. For the sake
 of (tiny) variation, we will also assume the premise and argue by contradiction
 instead of contraposing.
 -/
-example {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x :=
-  by
+example {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x := by
   intro h
   -- Assume the conclusion is false, and call this assumption H.
   by_contra H
@@ -274,8 +267,7 @@ add parentheses to get `u(n)` but we try to avoid parentheses because they pile 
 very quickly
 -/
 -- If y ≤ u n for all n and u n goes to x then y ≤ x
-theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : Limit u x) (ineq : ∀ n, y ≤ u n) : y ≤ x :=
-  by
+theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : Limit u x) (ineq : ∀ n, y ≤ u n) : y ≤ x := by
   -- Let's apply our previous lemma
   apply le_of_le_add_eps
   -- We need to prove y ≤ x + ε for all positive ε.
@@ -313,8 +305,7 @@ as `↑`. There are various lemmas asserting this map is compatible with additio
 monotone, but we don't want to bother writing their names. The `norm_cast`
 tactic is designed to wisely apply those lemmas for us.
 -/
-theorem inv_succ_pos : ∀ n : ℕ, 1 / (n + 1 : ℝ) > 0 :=
-  by
+theorem inv_succ_pos : ∀ n : ℕ, 1 / (n + 1 : ℝ) > 0 := by
   -- Let `n` be any integer
   intro n
   -- Since we don't know the name of the relevant lemma, asserting that the inverse of
@@ -344,8 +335,7 @@ example : ∀ n : ℕ, 1 / (n + 1 : ℝ) > 0 := fun n =>
 /-
 The next proof uses mostly known things, so we will commment only new aspects.
 -/
-theorem limit_inv_succ : ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, 1 / (n + 1 : ℝ) ≤ ε :=
-  by
+theorem limit_inv_succ : ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, 1 / (n + 1 : ℝ) ≤ ε := by
   intro ε ε_pos
   suffices ∃ N : ℕ, 1 / ε ≤ N
     by
@@ -384,8 +374,7 @@ theorem limit_inv_succ : ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, 1 / (n + 1 : ℝ)
 We can now put all pieces together, with almost no new things to explain.
 -/
 theorem inf_seq (A : Set ℝ) (x : ℝ) :
-    x is_an_inf_of A ↔ x ∈ lowBounds A ∧ ∃ u : ℕ → ℝ, Limit u x ∧ ∀ n, u n ∈ A :=
-  by
+    x is_an_inf_of A ↔ x ∈ lowBounds A ∧ ∃ u : ℕ → ℝ, Limit u x ∧ ∀ n, u n ∈ A := by
   constructor
   · intro h
     constructor

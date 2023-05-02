@@ -1,5 +1,5 @@
-import Mathbin.Data.Real.Basic
-import Mathbin.Algebra.Group.Pi
+import Mathlib.Data.Real.Basic
+import Mathlib.Algebra.Group.Pi
 
 /-
 In this file, we'll learn about the ∀ quantifier, and the disjunction
@@ -37,8 +37,7 @@ for didactic reason, Lean doesn't need those `unfold` invocations.
 We will also use `rfl` which is a term proving equalities that are true
 by definition (in a very strong sense to be discussed later).
 -/
-example (f g : ℝ → ℝ) : EvenFun f → EvenFun g → EvenFun (f + g) :=
-  by
+example (f g : ℝ → ℝ) : EvenFun f → EvenFun g → EvenFun (f + g) := by
   -- Assume f is even
   intro hf
   -- which means ∀ x, f (-x) = f x
@@ -86,8 +85,7 @@ simply need to move the cursor inside the list.
 
 Hence we can compress the above proof to:
 -/
-example (f g : ℝ → ℝ) : EvenFun f → EvenFun g → EvenFun (f + g) :=
-  by
+example (f g : ℝ → ℝ) : EvenFun f → EvenFun g → EvenFun (f + g) := by
   intro hf hg x
   calc
     (f + g) (-x) = f (-x) + g (-x) := rfl
@@ -99,27 +97,25 @@ Now let's practice. If you need to learn how to type a unicode symbol,
 you can put your mouse cursor above the symbol and wait for one second.
 -/
 -- 0023
-example (f g : ℝ → ℝ) : EvenFun f → EvenFun (g ∘ f) :=
-  by
+example (f g : ℝ → ℝ) : EvenFun f → EvenFun (g ∘ f) := by
   -- sorry
   intro hf x
   calc
     (g ∘ f) (-x) = g (f (-x)) := rfl
     _ = g (f x) := by rw [hf]
 
+  -- sorry
 
--- sorry
 -- 0024
-example (f g : ℝ → ℝ) : OddFun f → OddFun g → OddFun (g ∘ f) :=
-  by
+example (f g : ℝ → ℝ) : OddFun f → OddFun g → OddFun (g ∘ f) := by
   -- sorry
   intro hf hg x
   calc
     (g ∘ f) (-x) = g (f (-x)) := rfl
     _ = -(g ∘ f) x := by rw [hf, hg]
 
+  -- sorry
 
--- sorry
 /-
 Let's have more quantifiers, and play with forward and backward reasoning.
 
@@ -134,8 +130,7 @@ def NonIncreasing (f : ℝ → ℝ) :=
 #align non_increasing NonIncreasing
 
 -- Let's be very explicit and use forward reasoning first.
-example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonDecreasing (g ∘ f) :=
-  by
+example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonDecreasing (g ∘ f) := by
   -- Let x₁ and x₂ be real numbers such that x₁ ≤ x₂
   intro x₁ x₂ h
   -- Since f is non-decreasing, f x₁ ≤ f x₂.
@@ -155,8 +150,7 @@ implicit arguments.
 But let's leave that aside for now. One possible variation on the above proof is to
 use the `specialize` tactic to replace hf by its specialization to the relevant value.
  -/
-example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonDecreasing (g ∘ f) :=
-  by
+example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonDecreasing (g ∘ f) := by
   intro x₁ x₂ h
   specialize hf x₁ x₂ h
   exact hg (f x₁) (f x₂) hf
@@ -166,8 +160,7 @@ This `specialize` tactic is mostly useful for exploration, or in preparation for
 in the assumption. One can very often replace its use by using more complicated expressions
 directly involving the original assumption, as in the next variation:
 -/
-example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonDecreasing (g ∘ f) :=
-  by
+example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonDecreasing (g ∘ f) := by
   intro x₁ x₂ h
   exact hg (f x₁) (f x₂) (hf x₁ x₂ h)
 
@@ -186,8 +179,7 @@ Instead of pursuing this style, let's see how backward reasoning would look like
 As usual with this style, we use `apply` and enjoy Lean specializing assumptions for us
 using unification.
 -/
-example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonDecreasing (g ∘ f) :=
-  by
+example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonDecreasing (g ∘ f) := by
   -- Let x₁ and x₂ be real numbers such that x₁ ≤ x₂
   intro x₁ x₂ h
   -- We need to prove (g ∘ f) x₁ ≤ (g ∘ f) x₂.
@@ -199,14 +191,13 @@ example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonD
   exact h
 
 -- 0025
-example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonIncreasing g) : NonIncreasing (g ∘ f) :=
-  by
+example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonIncreasing g) : NonIncreasing (g ∘ f) := by
   -- sorry
   intro x₁ x₂ h
   apply hg
   exact hf x₁ x₂ h
+  -- sorry
 
--- sorry
 /-
 Let's switch to disjunctions now. Lean denotes by ∨ the
 logical OR operator.
@@ -227,8 +218,7 @@ easy computations or inequalities, as well as one lemma:
 
   mul_eq_zero : a*b = 0 ↔ a = 0 ∨ b = 0
 -/
-example (a b : ℝ) : a = a * b → a = 0 ∨ b = 1 :=
-  by
+example (a b : ℝ) : a = a * b → a = 0 ∨ b = 1 := by
   intro hyp
   have H : a * (1 - b) = 0 := by
     calc
@@ -243,8 +233,7 @@ example (a b : ℝ) : a = a * b → a = 0 ∨ b = 1 :=
     linarith
 
 -- 0026
-example (x y : ℝ) : x ^ 2 = y ^ 2 → x = y ∨ x = -y :=
-  by
+example (x y : ℝ) : x ^ 2 = y ^ 2 → x = y ∨ x = -y := by
   -- sorry
   intro hyp
   have H : (x - y) * (x + y) = 0
@@ -259,15 +248,14 @@ example (x y : ℝ) : x ^ 2 = y ^ 2 → x = y ∨ x = -y :=
     linarith
   · right
     linarith
+  -- sorry
 
--- sorry
 /-
 In the next exercise, we can use:
   eq_or_lt_of_le : x ≤ y → x = y ∨ x < y
 -/
 -- 0027
-example (f : ℝ → ℝ) : NonDecreasing f ↔ ∀ x y, x < y → f x ≤ f y :=
-  by
+example (f : ℝ → ℝ) : NonDecreasing f ↔ ∀ x y, x < y → f x ≤ f y := by
   -- sorry
   constructor
   · intro hf x y hxy
@@ -278,15 +266,14 @@ example (f : ℝ → ℝ) : NonDecreasing f ↔ ∀ x y, x < y → f x ≤ f y :
     cases' clef with hxy hxy
     rw [hxy]
     exact hf x y hxy
+  -- sorry
 
--- sorry
 /-
 In the next exercise, we can use:
   le_total x y : x ≤ y ∨ y ≤ x
 -/
 -- 0028
-example (f : ℝ → ℝ) (h : NonDecreasing f) (h' : ∀ x, f (f x) = x) : ∀ x, f x = x :=
-  by
+example (f : ℝ → ℝ) (h : NonDecreasing f) (h' : ∀ x, f (f x) = x) : ∀ x, f x = x := by
   -- sorry
   intro x
   have : f (f x) = x := by rw [h']
@@ -298,5 +285,5 @@ example (f : ℝ → ℝ) (h : NonDecreasing f) (h' : ∀ x, f (f x) = x) : ∀ 
   · have f1 : f x ≤ f (f x) := h x (f x) hx
     rw [h' x] at f1
     linarith
+  -- sorry
 
--- sorry

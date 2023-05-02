@@ -24,8 +24,7 @@ variable (u : ℕ → ℝ) (f : ℝ → ℝ) (x₀ l : ℝ)
 -- 0062
 example :
     (¬∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε) ↔-- sorry
-      ∃ ε > 0, ∀ N, ∃ n ≥ N, |u n - l| > ε :=
-  by
+      ∃ ε > 0, ∀ N, ∃ n ≥ N, |u n - l| > ε := by
   trace
     "./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[]"
 
@@ -35,8 +34,7 @@ example :
 -- 0063
 example :
     (¬∀ ε > 0, ∃ δ > 0, ∀ x, |x - x₀| ≤ δ → |f x - f x₀| ≤ ε) ↔-- sorry
-      ∃ ε > 0, ∀ δ > 0, ∃ x, |x - x₀| ≤ δ ∧ |f x - f x₀| > ε :=
-  by
+      ∃ ε > 0, ∀ δ > 0, ∃ x, |x - x₀| ≤ δ ∧ |f x - f x₀| > ε := by
   trace
     "./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[]"
 
@@ -53,8 +51,7 @@ Also, `∃ x x', ...` is the abbreviation of `∃ x, ∃ x', ...`.
 -- 0064
 example :
     (¬∀ ε > 0, ∃ δ > 0, ∀ x x', |x' - x| ≤ δ → |f x' - f x| ≤ ε) ↔-- sorry
-      ∃ ε > 0, ∀ δ > 0, ∃ x x', |x' - x| ≤ δ ∧ |f x' - f x| > ε :=
-  by
+      ∃ ε > 0, ∀ δ > 0, ∃ x x', |x' - x| ≤ δ ∧ |f x' - f x| > ε := by
   trace
     "./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[]"
 
@@ -67,12 +64,11 @@ example :
           (∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - x₀| ≤ ε) →
             ∀ ε > 0, ∃ N, ∀ n ≥ N, |(f ∘ u) n - f x₀| ≤ ε) ↔-- sorry
       ∃ u : ℕ → ℝ,
-        (∀ δ > 0, ∃ N, ∀ n ≥ N, |u n - x₀| ≤ δ) ∧ ∃ ε > 0, ∀ N, ∃ n ≥ N, |f (u n) - f x₀| > ε :=
-  by
+        (∀ δ > 0, ∃ N, ∀ n ≥ N, |u n - x₀| ≤ δ) ∧ ∃ ε > 0, ∀ N, ∃ n ≥ N, |f (u n) - f x₀| > ε := by
   trace
     "./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[]"
+  -- sorry
 
--- sorry
 end
 
 /-
@@ -93,8 +89,7 @@ le_max_right p q : q ≤ max p q
 def tendsto_infinity (u : ℕ → ℝ) := ∀ A, ∃ N, ∀ n ≥ N, u n ≥ A
 -/
 -- 0066
-example {u : ℕ → ℝ} : TendstoInfinity u → ∀ l, ¬SeqLimit u l :=
-  by
+example {u : ℕ → ℝ} : TendstoInfinity u → ∀ l, ¬SeqLimit u l := by
   -- sorry
   intro lim_infinie l lim_l
   cases' lim_l 1 (by linarith) with N hN
@@ -104,15 +99,14 @@ example {u : ℕ → ℝ} : TendstoInfinity u → ∀ l, ¬SeqLimit u l :=
   specialize hN' N₀ (le_max_right _ _)
   rw [abs_le] at hN
   linarith
+  -- sorry
 
--- sorry
 def NondecreasingSeq (u : ℕ → ℝ) :=
   ∀ n m, n ≤ m → u n ≤ u m
 #align nondecreasing_seq NondecreasingSeq
 
 -- 0067
-example (u : ℕ → ℝ) (l : ℝ) (h : SeqLimit u l) (h' : NondecreasingSeq u) : ∀ n, u n ≤ l :=
-  by
+example (u : ℕ → ℝ) (l : ℝ) (h : SeqLimit u l) (h' : NondecreasingSeq u) : ∀ n, u n ≤ l := by
   -- sorry
   intro n
   by_contra H
@@ -122,8 +116,8 @@ example (u : ℕ → ℝ) (l : ℝ) (h : SeqLimit u l) (h' : NondecreasingSeq u)
   specialize h' n (max n N) (le_max_left _ _)
   rw [abs_le] at hN
   linarith
+  -- sorry
 
--- sorry
 /-
 In the following exercises, `A : set ℝ` means that A is a set of real numbers.
 We can use the usual notation x ∈ A.
@@ -150,32 +144,29 @@ Remark: one can easily show that a set of real numbers has at most one sup,
 but we won't need this.
 -/
 -- 0068
-example {A : Set ℝ} {x : ℝ} (hx : IsSup A x) : ∀ y, y < x → ∃ a ∈ A, y < a :=
-  by
+example {A : Set ℝ} {x : ℝ} (hx : IsSup A x) : ∀ y, y < x → ∃ a ∈ A, y < a := by
   -- sorry
   intro y
   contrapose!
   exact hx.right y
+  -- sorry
 
--- sorry
 /-
 Let's do a variation on an example from file 07 that will be useful in the last
 exercise below.
 -/
 -- 0069
-theorem le_of_le_add_all' {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x :=
-  by
+theorem le_of_le_add_all' {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x := by
   -- sorry
   contrapose!
   intro h
   use (y - x) / 2
   constructor <;> linarith
 #align le_of_le_add_all' le_of_le_add_all'
+  -- sorry
 
--- sorry
 -- 0070
-example {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∀ n, u n ≤ y) : x ≤ y :=
-  by
+example {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∀ n, u n ≤ y) : x ≤ y := by
   -- sorry
   apply le_of_le_add_all'
   intro ε ε_pos
@@ -183,5 +174,5 @@ example {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∀ n, u n ≤
   specialize hN N (by linarith)
   rw [abs_le] at hN
   linarith [ineg N]
+  -- sorry
 
--- sorry

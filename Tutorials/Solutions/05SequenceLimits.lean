@@ -1,5 +1,5 @@
-import Mathbin.Data.Real.Basic
-import Mathbin.Algebra.Group.Pi
+import Mathlib.Data.Real.Basic
+import Mathlib.Algebra.Group.Pi
 import TutoLib
 /-
 In this file we manipulate the elementary definition of limits of
@@ -55,8 +55,7 @@ variable (u v w : ℕ → ℝ) (l l' : ℝ)
 
 -- If u is constant with value l then u tends to l
 -- 0033
-example : (∀ n, u n = l) → SeqLimit u l :=
-  by
+example : (∀ n, u n = l) → SeqLimit u l := by
   -- sorry
   intro h ε ε_pos
   use 0
@@ -64,8 +63,8 @@ example : (∀ n, u n = l) → SeqLimit u l :=
   rw [h]
   norm_num
   linarith
+  -- sorry
 
--- sorry
 /- When dealing with absolute values, we'll use lemmas:
 
 abs_le {x y : ℝ} : |x| ≤ y ↔ -y ≤ x ∧ x ≤ y
@@ -79,8 +78,7 @@ hand since they are used in many exercises.
 -/
 -- Assume l > 0. Then u tends to l implies u n ≥ l/2 for large enough n
 -- 0034
-example (hl : l > 0) : SeqLimit u l → ∃ N, ∀ n ≥ N, u n ≥ l / 2 :=
-  by
+example (hl : l > 0) : SeqLimit u l → ∃ N, ∀ n ≥ N, u n ≥ l / 2 := by
   -- sorry
   intro h
   cases' h (l / 2) (by linarith) with N hN
@@ -89,8 +87,8 @@ example (hl : l > 0) : SeqLimit u l → ∃ N, ∀ n ≥ N, u n ≥ l / 2 :=
   specialize hN n hn
   rw [abs_le] at hN
   linarith
+  -- sorry
 
--- sorry
 /-
 When dealing with max, you can use
 
@@ -106,8 +104,7 @@ the `abs` lemmas since they are used in many exercises.
 Let's see an example.
 -/
 -- If u tends to l and v tends l' then u+v tends to l+l'
-example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') :=
-  by
+example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') := by
   intro ε ε_pos
   cases' hu (ε / 2) (by linarith) with N₁ hN₁
   cases' hv (ε / 2) (by linarith) with N₂ hN₂
@@ -133,8 +130,7 @@ of the same statement.
 Another variation we introduce is rewriting using `ge_max_iff` and letting `linarith` handle the
 conjunction, instead of creating two new assumptions.
 -/
-example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') :=
-  by
+example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') := by
   intro ε ε_pos
   cases' hu (ε / 2) (by linarith) with N₁ hN₁
   cases' hv (ε / 2) (by linarith) with N₂ hN₂
@@ -151,8 +147,7 @@ example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') :=
 -- Let's do something similar: the squeezing theorem.
 -- 0035
 example (hu : SeqLimit u l) (hw : SeqLimit w l) (h : ∀ n, u n ≤ v n) (h' : ∀ n, v n ≤ w n) :
-    SeqLimit v l :=
-  by
+    SeqLimit v l := by
   -- sorry
   intro ε ε_pos
   cases' hu ε ε_pos with N hN
@@ -175,12 +170,11 @@ example (hu : SeqLimit u l) (hw : SeqLimit w l) (h : ∀ n, u n ≤ v n) (h' : �
     v n - l ≤ w n - l := by linarith
     _ ≤ ε := by linarith
 
+  -- sorry
 
--- sorry
 -- What about < ε?
 -- 0036
-example (u l) : SeqLimit u l ↔ ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| < ε :=
-  by
+example (u l) : SeqLimit u l ↔ ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| < ε := by
   -- sorry
   constructor
   · intro hyp ε ε_pos
@@ -197,16 +191,15 @@ example (u l) : SeqLimit u l ↔ ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| < ε 
     intro n hn
     specialize hN n hn
     linarith
+  -- sorry
 
--- sorry
 /- In the next exercise, we'll use
 
 eq_of_abs_sub_le_all (x y : ℝ) : (∀ ε > 0, |x - y| ≤ ε) → x = y
 -/
 -- A sequence admits at most one limit
 -- 0037
-example : SeqLimit u l → SeqLimit u l' → l = l' :=
-  by
+example : SeqLimit u l → SeqLimit u l' → l = l' := by
   -- sorry
   intro hl hl'
   apply eq_of_abs_sub_le_all
@@ -219,8 +212,8 @@ example : SeqLimit u l → SeqLimit u l' → l = l' :=
     _ = |u (max N N') - l| + |u (max N N') - l'| := by rw [abs_sub_comm]
     _ ≤ ε := by linarith [hN (max N N') (le_max_left _ _), hN' (max N N') (le_max_right _ _)]
 
+  -- sorry
 
--- sorry
 /-
 Let's now practice deciphering definitions before proving.
 -/
@@ -233,8 +226,7 @@ def IsSeqSup (M : ℝ) (u : ℕ → ℝ) :=
 #align is_seq_sup IsSeqSup
 
 -- 0038
-example (M : ℝ) (h : IsSeqSup M u) (h' : NonDecreasing u) : SeqLimit u M :=
-  by
+example (M : ℝ) (h : IsSeqSup M u) (h' : NonDecreasing u) : SeqLimit u M := by
   -- sorry
   intro ε ε_pos
   cases' h with inf_M sup_M_ep
@@ -243,5 +235,5 @@ example (M : ℝ) (h : IsSeqSup M u) (h' : NonDecreasing u) : SeqLimit u M :=
   intro n hn
   rw [abs_le]
   constructor <;> linarith [inf_M n, h' n₀ n hn]
+  -- sorry
 
--- sorry
