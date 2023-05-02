@@ -1,244 +1,246 @@
-import analysis.specific_limits.basic
-import data.int.parity
-import topology.sequences
+import Mathlib.Analysis.SpecificLimits.Basic
+import Mathlib.Data.Int.Parity
+import Mathlib.Topology.Sequences
 
-attribute [instance] classical.prop_decidable
+attribute [instance] Classical.propDecidable
 
-/- 
+/-
 Lemmas from that file were hidden in my course, or restating things which
 were proved without name in previous files.
 -/
-
-notation `|`x`|` := abs x
-
 -- The mathlib version is unusable because it is stated in terms of ≤
-lemma ge_max_iff {α : Type*} [linear_order α] {p q r : α} : r ≥ max p q  ↔ r ≥ p ∧ r ≥ q :=
-max_le_iff
+theorem ge_max_iff {α : Type _} [LinearOrder α] {p q r : α} : r ≥ max p q ↔ r ≥ p ∧ r ≥ q :=
+  max_le_iff
+#align ge_max_iff ge_max_iff
 
-/- No idea why this is not in mathlib-/
-lemma eq_of_abs_sub_le_all (x y : ℝ) : (∀ ε > 0, |x - y| ≤ ε) → x = y :=
-begin
-  intro h, 
-  apply eq_of_abs_sub_nonpos,
-  by_contradiction H,
-  push_neg at H,
-  specialize h ( |x-y|/2) (by linarith),
-  linarith,
-end
+-- No idea why this is not in mathlib
+theorem eq_of_abs_sub_le_all (x y : ℝ) : (∀ ε > 0, |x - y| ≤ ε) → x = y :=
+  by
+  intro h
+  apply eq_of_abs_sub_nonpos
+  by_contra H
+  push_neg  at H
+  specialize h (|x - y| / 2) (by linarith)
+  linarith
+#align eq_of_abs_sub_le_all eq_of_abs_sub_le_all
 
-def seq_limit (u : ℕ → ℝ) (l : ℝ) : Prop :=
-∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε
+def SeqLimit (u : ℕ → ℝ) (l : ℝ) : Prop :=
+  ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε
+#align seq_limit SeqLimit
 
-lemma unique_limit {u l l'} : seq_limit u l → seq_limit u l' → l = l' :=
-begin
-  intros hl hl',
-  apply eq_of_abs_sub_le_all,
-  intros ε ε_pos,
-  specialize hl (ε/2) (by linarith),
-  cases hl with N hN,
-  specialize hl' (ε/2) (by linarith),
-  cases hl' with N' hN',
-  specialize hN (max N N') (le_max_left _ _),
-  specialize hN' (max N N') (le_max_right _ _),
-  calc |l - l'| = |(l-u (max N N')) + (u (max N N') -l')| : by ring_nf
-  ... ≤ |l - u (max N N')| + |u (max N N') - l'| : by apply abs_add
-  ... = |u (max N N') - l| + |u (max N N') - l'| : by rw abs_sub_comm
-  ... ≤ ε/2 + ε/2 : by linarith
-  ... = ε : by ring,
-end
+theorem unique_limit {u l l'} : SeqLimit u l → SeqLimit u l' → l = l' :=
+  by
+  intro hl hl'
+  apply eq_of_abs_sub_le_all
+  intro ε ε_pos
+  specialize hl (ε / 2) (by linarith)
+  cases' hl with N hN
+  specialize hl' (ε / 2) (by linarith)
+  cases' hl' with N' hN'
+  specialize hN (max N N') (le_max_left _ _)
+  specialize hN' (max N N') (le_max_right _ _)
+  calc
+    |l - l'| = |l - u (max N N') + (u (max N N') - l')| := by ring_nf
+    _ ≤ |l - u (max N N')| + |u (max N N') - l'| := by apply abs_add
+    _ = |u (max N N') - l| + |u (max N N') - l'| := by rw [abs_sub_comm]
+    _ ≤ ε / 2 + ε / 2 := by linarith
+    _ = ε := by ring
 
-lemma le_of_le_add_all {x y : ℝ} :
-  (∀ ε > 0, y ≤ x + ε) →  y ≤ x :=
-begin
-  contrapose!,
-  intro h,
-  use (y-x)/2,
-  split ; linarith,
-end
+#align unique_limit unique_limit
 
-def upper_bound (A : set ℝ) (x : ℝ) := ∀ a ∈ A, a ≤ x
+theorem le_of_le_add_all {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x :=
+  by
+  contrapose!
+  intro h
+  use (y - x) / 2
+  constructor <;> linarith
+#align le_of_le_add_all le_of_le_add_all
 
-def is_sup (A : set ℝ) (x : ℝ) := upper_bound A x ∧ ∀ y, upper_bound A y → x ≤ y
+def UpperBound (A : Set ℝ) (x : ℝ) :=
+  ∀ a ∈ A, a ≤ x
+#align upper_bound UpperBound
 
-lemma lt_sup {A : set ℝ} {x : ℝ} (hx : is_sup A x) :
-∀ y, y < x → ∃ a ∈ A, y < a :=
-begin
-  intro y,
-  contrapose!,
-  exact hx.right y,
-end
+def IsSup (A : Set ℝ) (x : ℝ) :=
+  UpperBound A x ∧ ∀ y, UpperBound A y → x ≤ y
+#align is_sup IsSup
 
-lemma squeeze {u v w : ℕ → ℝ} {l} (hu : seq_limit u l) (hw : seq_limit w l)
-(h : ∀ n, u n ≤ v n)
-(h' : ∀ n, v n ≤ w n) : seq_limit v l :=
-begin
-  intros ε ε_pos,
-  cases hu ε ε_pos with N hN,
-  cases hw ε ε_pos with N' hN',
-  use max N N',
-  intros n hn,
-  rw ge_max_iff at hn,
-  specialize hN n (by linarith),
-  specialize hN' n (by linarith),
-  specialize h n,
-  specialize h' n,
-  rw abs_le at *,
-  split ; linarith
-end
+theorem lt_sup {A : Set ℝ} {x : ℝ} (hx : IsSup A x) : ∀ y, y < x → ∃ a ∈ A, y < a :=
+  by
+  intro y
+  contrapose!
+  exact hx.right y
+#align lt_sup lt_sup
 
-def extraction (φ : ℕ → ℕ) := ∀ n m, n < m → φ n < φ m
+theorem squeeze {u v w : ℕ → ℝ} {l} (hu : SeqLimit u l) (hw : SeqLimit w l) (h : ∀ n, u n ≤ v n)
+    (h' : ∀ n, v n ≤ w n) : SeqLimit v l :=
+  by
+  intro ε ε_pos
+  cases' hu ε ε_pos with N hN
+  cases' hw ε ε_pos with N' hN'
+  use max N N'
+  intro n hn
+  rw [ge_max_iff] at hn
+  specialize hN n (by linarith)
+  specialize hN' n (by linarith)
+  specialize h n
+  specialize h' n
+  rw [abs_le] at *
+  constructor <;> linarith
+#align squeeze squeeze
 
-def tendsto_infinity (u : ℕ → ℝ) := ∀ A, ∃ N, ∀ n ≥ N, u n ≥ A
+def Extraction (φ : ℕ → ℕ) :=
+  ∀ n m, n < m → φ n < φ m
+#align extraction Extraction
 
-lemma lim_le {x y : ℝ} {u : ℕ → ℝ} (hu : seq_limit u x)
-  (ineg : ∀ n, u n ≤ y) : x ≤ y :=
-begin
-  apply le_of_le_add_all,
-  intros ε ε_pos,
-  cases hu ε ε_pos with N hN,
-  specialize hN N (by linarith),
-  specialize ineg N,
-  rw abs_le at hN,
-  linarith,
-end
+def TendstoInfinity (u : ℕ → ℝ) :=
+  ∀ A, ∃ N, ∀ n ≥ N, u n ≥ A
+#align tendsto_infinity TendstoInfinity
 
-lemma inv_succ_le_all :  ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, 1/(n + 1 : ℝ) ≤ ε :=
-begin
-  convert metric.tendsto_at_top.mp (tendsto_one_div_add_at_top_nhds_0_nat),
-  apply propext,
-  simp only [real.dist_eq, sub_zero],
-  split,
-    intros h ε ε_pos,
-    cases h (ε/2) (by linarith) with N hN,
-    use N,
-    intros n hn,
-    rw abs_of_pos (nat.one_div_pos_of_nat : 1/(n+1 : ℝ) > 0),
-    specialize hN n hn,
-    linarith,
-  intros h ε ε_pos,
-  cases h ε (by linarith) with N hN,
-  use N,
-  intros n hn,
-  specialize hN n hn,
-  rw abs_of_pos (@nat.one_div_pos_of_nat ℝ _ n) at hN,
-  linarith,
-end
+theorem lim_le {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∀ n, u n ≤ y) : x ≤ y :=
+  by
+  apply le_of_le_add_all
+  intro ε ε_pos
+  cases' hu ε ε_pos with N hN
+  specialize hN N (by linarith)
+  specialize ineg N
+  rw [abs_le] at hN
+  linarith
+#align lim_le lim_le
 
-lemma limit_const (x : ℝ) : seq_limit (λ n, x) x :=
-λ ε ε_pos, ⟨0, λ _ _, by simp [le_of_lt ε_pos]⟩
+theorem inv_succ_le_all : ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, 1 / (n + 1 : ℝ) ≤ ε :=
+  by
+  convert metric.tendsto_at_top.mp tendsto_one_div_add_atTop_nhds_0_nat
+  apply propext
+  simp only [Real.dist_eq, sub_zero]
+  constructor
+  intro h ε ε_pos
+  cases' h (ε / 2) (by linarith) with N hN
+  use N
+  intro n hn
+  rw [abs_of_pos (Nat.one_div_pos_of_nat : 1 / (n + 1 : ℝ) > 0)]
+  specialize hN n hn
+  linarith
+  intro h ε ε_pos
+  cases' h ε (by linarith) with N hN
+  use N
+  intro n hn
+  specialize hN n hn
+  rw [abs_of_pos (@Nat.one_div_pos_of_nat ℝ _ n)] at hN
+  linarith
+#align inv_succ_le_all inv_succ_le_all
 
-lemma limit_of_sub_le_inv_succ {u : ℕ → ℝ} {x : ℝ} (h : ∀ n, |u n - x| ≤ 1/(n+1)) :
-seq_limit u x :=
-begin
-  intros ε ε_pos,
-  rcases inv_succ_le_all ε ε_pos with ⟨N, hN⟩,
-  use N,
-  intros n hn,
-  specialize h n,
-  specialize hN n hn,
-  linarith,
-end
+theorem limit_const (x : ℝ) : SeqLimit (fun n => x) x := fun ε ε_pos =>
+  ⟨0, fun _ _ => by simp [le_of_lt ε_pos]⟩
+#align limit_const limit_const
 
-lemma limit_const_add_inv_succ (x : ℝ) : seq_limit (λ n, x + 1/(n+1)) x :=
-limit_of_sub_le_inv_succ (λ n, by rw abs_of_pos ; linarith [@nat.one_div_pos_of_nat ℝ _ n])
+theorem limit_of_sub_le_inv_succ {u : ℕ → ℝ} {x : ℝ} (h : ∀ n, |u n - x| ≤ 1 / (n + 1)) :
+    SeqLimit u x := by
+  intro ε ε_pos
+  rcases inv_succ_le_all ε ε_pos with ⟨N, hN⟩
+  use N
+  intro n hn
+  specialize h n
+  specialize hN n hn
+  linarith
+#align limit_of_sub_le_inv_succ limit_of_sub_le_inv_succ
 
-lemma limit_const_sub_inv_succ (x : ℝ) : seq_limit (λ n, x - 1/(n+1)) x :=
-begin
-  refine limit_of_sub_le_inv_succ (λ n, _),
-  rw [show x - 1 / (n + 1) - x = -(1/(n+1)), by ring, abs_neg,  abs_of_pos],
-  linarith [@nat.one_div_pos_of_nat ℝ _ n]
-end
+theorem limit_const_add_inv_succ (x : ℝ) : SeqLimit (fun n => x + 1 / (n + 1)) x :=
+  limit_of_sub_le_inv_succ fun n => by rw [abs_of_pos] <;> linarith [@Nat.one_div_pos_of_nat ℝ _ n]
+#align limit_const_add_inv_succ limit_const_add_inv_succ
 
-lemma id_le_extraction {φ}: extraction φ → ∀ n, n ≤ φ n :=
-begin
-  intros hyp n,
-  induction n with n hn,
-  { exact nat.zero_le _ },
-  { exact nat.succ_le_of_lt (by linarith [hyp n (n+1) (by linarith)]) },
-end
+theorem limit_const_sub_inv_succ (x : ℝ) : SeqLimit (fun n => x - 1 / (n + 1)) x :=
+  by
+  refine' limit_of_sub_le_inv_succ fun n => _
+  rw [show x - 1 / (n + 1) - x = -(1 / (n + 1)) by ring, abs_neg, abs_of_pos]
+  linarith [@Nat.one_div_pos_of_nat ℝ _ n]
+#align limit_const_sub_inv_succ limit_const_sub_inv_succ
 
-lemma seq_limit_id : tendsto_infinity (λ n, n) :=
-begin
-  intros A,
-  cases exists_nat_gt A with N hN,
-  use N,
-  intros n hn,
-  have : (n : ℝ) ≥ N, exact_mod_cast hn, 
-  linarith,
-end
+theorem id_le_extraction {φ} : Extraction φ → ∀ n, n ≤ φ n :=
+  by
+  intro hyp n
+  induction' n with n hn
+  · exact Nat.zero_le _
+  · exact Nat.succ_le_of_lt (by linarith [hyp n (n + 1) (by linarith)])
+#align id_le_extraction id_le_extraction
 
-variables {u : ℕ → ℝ} {l : ℝ} {φ : ℕ → ℕ}
+theorem seq_limit_id : TendstoInfinity fun n => n :=
+  by
+  intro A
+  cases' exists_nat_gt A with N hN
+  use N
+  intro n hn
+  have : (n : ℝ) ≥ N; exact_mod_cast hn
+  linarith
+#align seq_limit_id seq_limit_id
 
-open set filter
+variable {u : ℕ → ℝ} {l : ℝ} {φ : ℕ → ℕ}
 
-def cluster_point (u : ℕ → ℝ) (a : ℝ) :=
-∃ φ, extraction φ ∧ seq_limit (u ∘ φ) a
+open Set Filter
 
-lemma bolzano_weierstrass {a b : ℝ} {u : ℕ → ℝ} (h : ∀ n, u n ∈ Icc a b) :
-∃ c ∈ Icc a b, cluster_point u c :=
-begin
-  rcases (is_compact_Icc : is_compact (Icc a b)).tendsto_subseq h with ⟨c, c_in, φ, hφ, lim⟩,
-  use [c, c_in, φ, hφ],
-  simp_rw [metric.tendsto_nhds, eventually_at_top, real.dist_eq] at lim,
-  intros ε ε_pos,
-  rcases lim ε ε_pos with ⟨N, hN⟩,
-  use N,
-  intros n hn,
+def ClusterPoint (u : ℕ → ℝ) (a : ℝ) :=
+  ∃ φ, Extraction φ ∧ SeqLimit (u ∘ φ) a
+#align cluster_point ClusterPoint
+
+theorem bolzano_weierstrass {a b : ℝ} {u : ℕ → ℝ} (h : ∀ n, u n ∈ Icc a b) :
+    ∃ c ∈ Icc a b, ClusterPoint u c :=
+  by
+  rcases(is_compact_Icc : IsCompact (Icc a b)).tendsto_subseq h with ⟨c, c_in, φ, hφ, lim⟩
+  use c, c_in, φ, hφ
+  simp_rw [Metric.tendsto_nhds, eventually_at_top, Real.dist_eq] at lim
+  intro ε ε_pos
+  rcases limUnder ε ε_pos with ⟨N, hN⟩
+  use N
+  intro n hn
   exact le_of_lt (hN n hn)
-end
+#align bolzano_weierstrass bolzano_weierstrass
 
-lemma not_seq_limit_of_tendstoinfinity {u : ℕ → ℝ} :
-  tendsto_infinity u → ∀ x, ¬ seq_limit u x :=
-begin
-  intros lim_infinie x lim_x,
-  cases lim_x 1 (by linarith) with N hN,
-  cases lim_infinie (x+2) with N' hN',
-  let N₀ := max N N',
-  specialize hN N₀ (le_max_left _ _),
-  specialize hN' N₀ (le_max_right _ _),
-  rw abs_le at hN,
-  linarith,
-end
+theorem not_seqLimit_of_tendstoinfinity {u : ℕ → ℝ} : TendstoInfinity u → ∀ x, ¬SeqLimit u x :=
+  by
+  intro lim_infinie x lim_x
+  cases' lim_x 1 (by linarith) with N hN
+  cases' lim_infinie (x + 2) with N' hN'
+  let N₀ := max N N'
+  specialize hN N₀ (le_max_left _ _)
+  specialize hN' N₀ (le_max_right _ _)
+  rw [abs_le] at hN
+  linarith
+#align not_seq_limit_of_tendstoinfinity not_seqLimit_of_tendstoinfinity
 
-open real 
+open Real
 
-lemma sup_segment {a b : ℝ} {A : set ℝ} (hnonvide : ∃ x, x ∈ A) (h : A ⊆ Icc a b) :
-  ∃ x ∈ Icc a b, is_sup A x :=
-begin
-  have b_maj :  ∀ (y : ℝ), y ∈ A → y ≤ b,
-    from λ y y_in, (h y_in).2,
-  have Sup_maj : upper_bound A (Sup A),
-  { intro x,
-    apply le_cSup,
-    use [b, b_maj] } ,
-  refine ⟨Sup A, _, _⟩,
-  { split,
-    { cases hnonvide with x x_in,
-      exact le_trans (h x_in).1 (Sup_maj _ x_in) },
-    { apply cSup_le hnonvide b_maj } },
-  { exact ⟨Sup_maj, λ y, cSup_le hnonvide⟩ },
-end
+theorem sup_segment {a b : ℝ} {A : Set ℝ} (hnonvide : ∃ x, x ∈ A) (h : A ⊆ Icc a b) :
+    ∃ x ∈ Icc a b, IsSup A x :=
+  by
+  have b_maj : ∀ y : ℝ, y ∈ A → y ≤ b := fun y y_in => (h y_in).2
+  have Sup_maj : UpperBound A (Sup A) := by
+    intro x
+    apply le_csupₛ
+    use b, b_maj
+  refine' ⟨Sup A, _, _⟩
+  · constructor
+    · cases' hnonvide with x x_in
+      exact le_trans (h x_in).1 (Sup_maj _ x_in)
+    · apply csupₛ_le hnonvide b_maj
+  · exact ⟨Sup_maj, fun y => csupₛ_le hnonvide⟩
+#align sup_segment sup_segment
 
-lemma subseq_tendsto_of_tendsto (h : seq_limit u l) (hφ : extraction φ) :
-seq_limit (u ∘ φ) l :=
-begin
-  intros ε ε_pos,
-  cases h ε ε_pos with N hN,
-  use N,
-  intros n hn,
-  apply hN,
-  calc N ≤ n   : hn 
-     ... ≤ φ n : id_le_extraction hφ n, 
-end
-namespace tactic.interactive
-open tactic
+theorem subseq_tendsto_of_tendsto (h : SeqLimit u l) (hφ : Extraction φ) : SeqLimit (u ∘ φ) l :=
+  by
+  intro ε ε_pos
+  cases' h ε ε_pos with N hN
+  use N
+  intro n hn
+  apply hN
+  calc
+    N ≤ n := hn
+    _ ≤ φ n := id_le_extraction hφ n
 
-meta def check_me : tactic unit :=
-`[ { repeat { unfold seq_limit},
-   repeat { unfold continue_en },
-   push_neg,
-   try { simp only [exists_prop] },
-   try { exact iff.rfl },
-   done } <|> fail "That's not quite right. Please try again." ]
+#align subseq_tendsto_of_tendsto subseq_tendsto_of_tendsto
 
-end tactic.interactive
+open Tactic
+
+/- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
+unsafe def check_me : tactic Unit :=
+  sorry
+#align tactic.interactive.check_me check_me
+

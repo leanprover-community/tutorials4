@@ -1,6 +1,6 @@
-import data.real.basic
+import Mathbin.Data.Real.Basic
 
-open_locale classical
+open Classical
 
 /-
 Theoretical negations.
@@ -14,127 +14,121 @@ that are used by those tactics. Of course we can use
 
 If this doesn't sound like fun then skip ahead to the next file.
 -/
+section NegationProp
 
-section negation_prop
-
-variables P Q : Prop
+variable (P Q : Prop)
 
 -- 0055
-example : (P → Q) ↔ (¬ Q → ¬ P) :=
-begin
+example : P → Q ↔ ¬Q → ¬P :=
+  by
   -- sorry
-  split,
-  { intros h hnQ hP,
-    exact hnQ (h hP) },
-  { intros h hP,
-    by_contradiction hnQ,
-    exact h hnQ hP },
-  -- sorry
-end
+  constructor
+  · intro h hnQ hP
+    exact hnQ (h hP)
+  · intro h hP
+    by_contra hnQ
+    exact h hnQ hP
 
+-- sorry
 -- 0056
-lemma non_imp (P Q : Prop) : ¬ (P → Q) ↔ P ∧ ¬ Q :=
-begin
+theorem non_imp (P Q : Prop) : ¬(P → Q) ↔ P ∧ ¬Q :=
+  by
   -- sorry
-  split,
-  { intro h,
-    by_contradiction H,
-    apply h,
-    intro hP,
-    by_contradiction H',
-    apply H,
-    exact ⟨hP, H'⟩ },
-  { intros h h',
-    cases h with hP hnQ,
-    exact hnQ (h' hP) },
-  -- sorry
-end
+  constructor
+  · intro h
+    by_contra H
+    apply h
+    intro hP
+    by_contra H'
+    apply H
+    exact ⟨hP, H'⟩
+  · intro h h'
+    cases' h with hP hnQ
+    exact hnQ (h' hP)
+#align non_imp non_imp
 
+-- sorry
 -- In the next one, let's use the axiom
 -- propext {P Q : Prop} : (P ↔ Q) → P = Q
-
 -- 0057
-example (P : Prop) : ¬ P ↔ P = false :=
-begin
+example (P : Prop) : ¬P ↔ P = False :=
+  by
   -- sorry
-  split,
-  { intro h,
-    apply propext,
-    split,
-    { intro h',
-      exact h h' },
-    { intro h,
-      exfalso,
-      exact h } },
-  { intro h,
-    rw h,
-    exact id },
-  -- sorry
-end
+  constructor
+  · intro h
+    apply propext
+    constructor
+    · intro h'
+      exact h h'
+    · intro h
+      exfalso
+      exact h
+  · intro h
+    rw [h]
+    exact id
 
-end negation_prop
+-- sorry
+end NegationProp
 
-section negation_quantifiers
-variables (X : Type) (P : X → Prop)
+section NegationQuantifiers
+
+variable (X : Type) (P : X → Prop)
 
 -- 0058
-example : ¬ (∀ x, P x) ↔ ∃ x, ¬ P x :=
-begin
+example : (¬∀ x, P x) ↔ ∃ x, ¬P x :=
+  by
   -- sorry
-  split,
-  { intro h,
-    by_contradiction H,
-    apply h,
-    intros x,
-    by_contradiction H',
-    apply H,
-    use [x, H'] },
-  { rintros ⟨x, hx⟩ h',
-    exact hx (h' x) },
-  -- sorry
-end
+  constructor
+  · intro h
+    by_contra H
+    apply h
+    intro x
+    by_contra H'
+    apply H
+    use x, H'
+  · rintro ⟨x, hx⟩ h'
+    exact hx (h' x)
 
+-- sorry
 -- 0059
-example : ¬ (∃ x, P x) ↔ ∀ x, ¬ P x :=
-begin
+example : (¬∃ x, P x) ↔ ∀ x, ¬P x :=
+  by
   -- sorry
-  split,
-  { intros h x h',
-    apply h,
-    use [x, h'] },
-  { rintros h ⟨x, hx⟩,
-    exact h x hx },
-  -- sorry
-end
+  constructor
+  · intro h x h'
+    apply h
+    use x, h'
+  · rintro h ⟨x, hx⟩
+    exact h x hx
 
+-- sorry
 -- 0060
-example (P : ℝ → Prop) : ¬ (∃ ε > 0, P ε) ↔ ∀ ε > 0, ¬ P ε :=
-begin
+example (P : ℝ → Prop) : (¬∃ ε > 0, P ε) ↔ ∀ ε > 0, ¬P ε :=
+  by
   -- sorry
-  split,
-  { intros h ε ε_pos hP,
-    apply h,
-    use [ε, ε_pos, hP] },
-  { rintros h ⟨ε, ε_pos, hP⟩,
-    exact h ε ε_pos hP },
-  -- sorry
-end
+  constructor
+  · intro h ε ε_pos hP
+    apply h
+    use ε, ε_pos, hP
+  · rintro h ⟨ε, ε_pos, hP⟩
+    exact h ε ε_pos hP
 
+-- sorry
 -- 0061
-example (P : ℝ → Prop) : ¬ (∀ x > 0, P x) ↔ ∃ x > 0, ¬ P x :=
-begin
+example (P : ℝ → Prop) : (¬∀ x > 0, P x) ↔ ∃ x > 0, ¬P x :=
+  by
   -- sorry
-  split,
-  { intros h,
-    by_contradiction H,
-    apply h,
-    intros x x_pos,
-    by_contradiction HP,
-    apply H,
-    use [x, x_pos, HP] },
-  { rintros ⟨x, xpos, hx⟩ h',
-    exact hx (h' x xpos) },
-  -- sorry
-end
+  constructor
+  · intro h
+    by_contra H
+    apply h
+    intro x x_pos
+    by_contra HP
+    apply H
+    use x, x_pos, HP
+  · rintro ⟨x, xpos, hx⟩ h'
+    exact hx (h' x xpos)
 
-end negation_quantifiers
+-- sorry
+end NegationQuantifiers
+

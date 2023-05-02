@@ -1,5 +1,5 @@
 /build
-/lake-packages
+/lake-packages/*
 /.cache
 .DS_Store
-my_exercises
+
