@@ -4,14 +4,14 @@ import re
 from pathlib import Path
 
 sorry_regex = re.compile(r'(.*)-- sorry.*')
-root = Path(__file__).parent/'src'
+root = Path(__file__).parent/'Tutorials'
 
 if __name__ == '__main__':
-    for path in (root/'solutions').glob('**/*.lean'):
-        if path.name == 'tuto_lib.lean':
+    for path in (root/'Solutions').glob('**/*.lean'):
+        if path.name == 'TutoLib.lean':
             continue
         print(path)
-        out = root/'exercises'/path.relative_to(root/'solutions')
+        out = root/'Exercises'/path.relative_to(root/'Solutions')
         with out.open('w') as outp:
             with path.open() as inp:
                 state = 'normal'
