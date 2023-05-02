@@ -43,5 +43,9 @@ number. If no such thread exists, you can create one!
 ## Not yet working
 
 A list of things that don't work (yet) in Lean 4
-* `linarith` gives many errors
+* `linarith` gives many errors, in particular w.r.t. division
 * `set_option pp.parens true`
+* `set_option pp.beta true` [use Kyle's meta-code]
+* `set_option pp.coercions true`?
+* `check_me`?
+* ...
