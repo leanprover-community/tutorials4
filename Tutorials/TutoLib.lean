@@ -201,18 +201,10 @@ theorem subseq_tendsto_of_tendsto (h : SeqLimit u l) (hφ : Extraction φ) : Seq
 
 open Lean Elab Tactic
 
-macro "check_me" : tactic => `(tactic| (
-   repeat { unfold seq_limit };
-   repeat { unfold continue_en };
-   push_neg;
-   try { simp only [exists_prop] };
-   try { exact Iff.rfl };
-   done))
-/-
-`[ { repeat { unfold seq_limit},
-   repeat { unfold continue_en },
-   push_neg,
-   try { simp only [exists_prop] },
-   try { exact iff.rfl },
-   done } <|> fail "That's not quite right. Please try again." ]
--/
+macro  "check_me" : tactic => `(tactic| (
+   repeat unfold seq_limit
+   repeat unfold continue_en
+   push_neg
+   try simp only [exists_prop]
+   try exact Iff.rfl
+   first | done | fail "That's not quite right. Please try again."))
