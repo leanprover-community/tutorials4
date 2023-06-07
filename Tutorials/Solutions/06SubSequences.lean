@@ -1,4 +1,4 @@
-import TutoLib
+import Tutorials.TutoLib
 
 /-
 This file continues the elementary study of limits of sequences.
@@ -148,4 +148,3 @@ example (hu : CauchySequence u) (hl : ClusterPoint u l) : SeqLimit u l := by
     _ ≤ |u n - u N'| + |u N' - l| := by apply abs_add
     _ ≤ ε := by linarith [hN n N' (by linarith) hNN']
   -- sorry
-

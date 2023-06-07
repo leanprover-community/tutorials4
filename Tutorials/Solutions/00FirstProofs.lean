@@ -401,4 +401,3 @@ theorem inf_seq (A : Set ℝ) (x : ℝ) :
     apply le_lim lim
     intro n
     exact y_mino (u n) (huA n)
-

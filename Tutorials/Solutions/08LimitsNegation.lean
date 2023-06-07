@@ -1,4 +1,4 @@
-import tuto_lib
+import Tutorials.TutoLib
 
 
 section
@@ -25,21 +25,19 @@ variable (u : ℕ → ℝ) (f : ℝ → ℝ) (x₀ l : ℝ)
 example :
     (¬∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε) ↔-- sorry
       ∃ ε > 0, ∀ N, ∃ n ≥ N, |u n - l| > ε := by
-  trace
-    "./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[]"
-
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[] -/
 -- sorry
+check_me
+-- sorry
+
 -- Negation of "f is continuous at x₀"
 -- 0063
 example :
     (¬∀ ε > 0, ∃ δ > 0, ∀ x, |x - x₀| ≤ δ → |f x - f x₀| ≤ ε) ↔-- sorry
       ∃ ε > 0, ∀ δ > 0, ∃ x, |x - x₀| ≤ δ ∧ |f x - f x₀| > ε := by
-  trace
-    "./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[]"
-
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[] -/
 -- sorry
+check_me
+-- sorry
+
 /-
 In the next exercise, we need to keep in mind that
 `∀ x x', ...` is the abbreviation of
@@ -52,11 +50,10 @@ Also, `∃ x x', ...` is the abbreviation of `∃ x, ∃ x', ...`.
 example :
     (¬∀ ε > 0, ∃ δ > 0, ∀ x x', |x' - x| ≤ δ → |f x' - f x| ≤ ε) ↔-- sorry
       ∃ ε > 0, ∀ δ > 0, ∃ x x', |x' - x| ≤ δ ∧ |f x' - f x| > ε := by
-  trace
-    "./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[]"
-
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[] -/
 -- sorry
+check_me
+-- sorry
+
 -- Negation of "f is sequentially continuous at x₀"
 -- 0065
 example :
@@ -65,9 +62,9 @@ example :
             ∀ ε > 0, ∃ N, ∀ n ≥ N, |(f ∘ u) n - f x₀| ≤ ε) ↔-- sorry
       ∃ u : ℕ → ℝ,
         (∀ δ > 0, ∃ N, ∀ n ≥ N, |u n - x₀| ≤ δ) ∧ ∃ ε > 0, ∀ N, ∃ n ≥ N, |f (u n) - f x₀| > ε := by
-  trace
-    "./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[]"
-  -- sorry
+-- sorry
+check_me
+-- sorry
 
 end
 
@@ -173,4 +170,3 @@ example {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∀ n, u n ≤
   rw [abs_le] at hN
   linarith [ineg N]
   -- sorry
-

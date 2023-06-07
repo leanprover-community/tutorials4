@@ -1,6 +1,6 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Group.Pi
-import TutoLib
+import Tutorials.TutoLib
 /-
 In this file we manipulate the elementary definition of limits of
 sequences of real numbers.
@@ -232,4 +232,3 @@ example (M : ℝ) (h : IsSeqSup M u) (h' : NonDecreasing u) : SeqLimit u M := by
   rw [abs_le]
   constructor <;> linarith [inf_M n, h' n₀ n hn]
   -- sorry
-

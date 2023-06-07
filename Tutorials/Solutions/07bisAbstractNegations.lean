@@ -80,7 +80,8 @@ example : (¬∀ x, P x) ↔ ∃ x, ¬P x := by
     intro x
     by_contra H'
     apply H
-    use x, H'
+    use x
+    exact H'
   · rintro ⟨x, hx⟩ h'
     exact hx (h' x)
   -- sorry
@@ -91,7 +92,8 @@ example : (¬∃ x, P x) ↔ ∀ x, ¬P x := by
   constructor
   · intro h x h'
     apply h
-    use x, h'
+    use x
+    exact h'
   · rintro h ⟨x, hx⟩
     exact h x hx
   -- sorry
@@ -102,7 +104,8 @@ example (P : ℝ → Prop) : (¬∃ ε > 0, P ε) ↔ ∀ ε > 0, ¬P ε := by
   constructor
   · intro h ε ε_pos hP
     apply h
-    use ε, ε_pos, hP
+    use ε, ε_pos
+    exact hP
   · rintro h ⟨ε, ε_pos, hP⟩
     exact h ε ε_pos hP
   -- sorry
@@ -117,10 +120,10 @@ example (P : ℝ → Prop) : (¬∀ x > 0, P x) ↔ ∃ x > 0, ¬P x := by
     intro x x_pos
     by_contra HP
     apply H
-    use x, x_pos, HP
+    use x, x_pos
+    exact HP
   · rintro ⟨x, xpos, hx⟩ h'
     exact hx (h' x xpos)
   -- sorry
 
 end NegationQuantifiers
-

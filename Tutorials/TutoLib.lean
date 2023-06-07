@@ -176,17 +176,17 @@ open Real
 theorem sup_segment {a b : ℝ} {A : Set ℝ} (hnonvide : ∃ x, x ∈ A) (h : A ⊆ Icc a b) :
     ∃ x ∈ Icc a b, IsSup A x := by
   have b_maj : ∀ y : ℝ, y ∈ A → y ≤ b := fun y y_in => (h y_in).2
-  have Sup_maj : UpperBound A (supₛ A) := by
+  have Sup_maj : UpperBound A (sSup A) := by
     intro x
-    apply le_csupₛ
+    apply le_csSup
     use b
     exact b_maj
-  refine' ⟨supₛ A, _, _⟩
+  refine' ⟨sSup A, _, _⟩
   · constructor
     · cases' hnonvide with x x_in
       exact le_trans (h x_in).1 (Sup_maj _ x_in)
-    · apply csupₛ_le hnonvide b_maj
-  · exact ⟨Sup_maj, fun y => csupₛ_le hnonvide⟩
+    · apply csSup_le hnonvide b_maj
+  · exact ⟨Sup_maj, fun y => csSup_le hnonvide⟩
 
 theorem subseq_tendsto_of_tendsto (h : SeqLimit u l) (hφ : Extraction φ) : SeqLimit (u ∘ φ) l := by
   intro ε ε_pos
@@ -201,9 +201,13 @@ theorem subseq_tendsto_of_tendsto (h : SeqLimit u l) (hφ : Extraction φ) : Seq
 
 open Lean Elab Tactic
 
-/- ./././Mathport/Syntax/Translate/Expr.lean:330:4: warning: unsupported (TODO): `[tacs] -/
-unsafe def check_me : TacticM Unit :=
-  sorry
+macro "check_me" : tactic => `(tactic| (
+   repeat { unfold seq_limit };
+   repeat { unfold continue_en };
+   push_neg;
+   try { simp only [exists_prop] };
+   try { exact Iff.rfl };
+   done))
 /-
 `[ { repeat { unfold seq_limit},
    repeat { unfold continue_en },
@@ -212,4 +216,3 @@ unsafe def check_me : TacticM Unit :=
    try { exact iff.rfl },
    done } <|> fail "That's not quite right. Please try again." ]
 -/
-

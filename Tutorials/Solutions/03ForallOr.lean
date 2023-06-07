@@ -276,8 +276,7 @@ example (f : ℝ → ℝ) : NonDecreasing f ↔ ∀ x y, x < y → f x ≤ f y :
     have clef : x = y ∨ x < y := eq_or_lt_of_le hxy
     cases' clef with hxy hxy
     · rw [hxy]
-      rfl
-    exact hf x y hxy
+    · exact hf x y hxy
   -- sorry
 
 /-
@@ -298,4 +297,3 @@ example (f : ℝ → ℝ) (h : NonDecreasing f) (h' : ∀ x, f (f x) = x) : ∀ 
     rw [h' x] at f1
     linarith
   -- sorry
-

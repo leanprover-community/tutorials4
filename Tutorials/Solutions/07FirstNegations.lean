@@ -1,4 +1,4 @@
-import tuto_lib
+import Tutorials.TutoLib
 
 /-
 Negations, proof by contradiction and contraposition.
@@ -244,6 +244,7 @@ example (f : ℝ → ℝ) : ¬EvenFun f ↔ ∃ x, f (-x) ≠ f x := by
     by_contra H
     apply h
     use x
+    exact H
   /- Alternative version
       intro h,
       by_contradiction H,
@@ -272,6 +273,7 @@ example (f : ℝ → ℝ) : ¬EvenFun f ↔ ∃ x, f (-x) ≠ f x := by
   -- sorry
   unfold EvenFun
   push_neg
+  rfl
   -- sorry
 
 def BoundedAbove (f : ℝ → ℝ) :=
@@ -319,4 +321,3 @@ example (f : ℝ → ℝ) : (∀ x y, x < y → f x < f y) ↔ ∀ x y, x ≤ y 
     intro h
     rwa [hf]
   -- sorry
-

@@ -17,7 +17,6 @@ or a more complicated expression.
 -/
 example : ∃ n : ℕ, 8 = 2 * n := by
   use 4
-  rfl
 
 -- this is the tactic analogue of the rfl proof term
 /-
@@ -112,6 +111,7 @@ example (h : Surjective (g ∘ f)) : Surjective g := by
   intro y
   rcases h y with ⟨w, rfl⟩
   use f w
+  rfl
   -- sorry
 
 /-
@@ -125,5 +125,5 @@ example (hf : Surjective f) (hg : Surjective g) : Surjective (g ∘ f) := by
   rcases hg z with ⟨y, rfl⟩
   rcases hf y with ⟨x, rfl⟩
   use x
+  rfl
   -- sorry
-

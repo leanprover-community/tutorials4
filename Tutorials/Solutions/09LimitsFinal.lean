@@ -1,9 +1,4 @@
-import tuto_lib
-
-set_option pp.beta true
-
-/- ./././Mathport/Syntax/Translate/Basic.lean:334:40: warning: unsupported option pp.coercions -/
-set_option pp.coercions false
+import Tutorials.TutoLib
 
 /-
 This is the final file in the series. Here we use everything covered
@@ -259,6 +254,7 @@ theorem bdd_above_segment {f : ℝ → ℝ} {a b : ℝ} (hf : ∀ x ∈ Icc a b,
   apply squeeze_infinity seq_limit_id
   intro n
   specialize hu n
+  dsimp
   linarith
   have bornes : ∀ n, u n ∈ Icc a b
   intro n
@@ -343,16 +339,16 @@ example {a b : ℝ} (hab : a ≤ b) (hf : ∀ x ∈ Icc a b, ContinuousAtPt f x)
   cases' bdd_below_segment hf with m hm
   cases' bdd_above_segment hf with M hM
   let A := { y | ∃ x ∈ Icc a b, y = f x }
-  obtain ⟨y₀, y_dans, y_sup⟩ : ∃ y₀ ∈ Icc m M, IsSup A y₀ :=
+  obtain ⟨y₀, -, y_sup⟩ : ∃ y₀ ∈ Icc m M, IsSup A y₀ :=
     by
     apply sup_segment
-    · use f a, a, by linarith, hab, by ring
+    · exact ⟨f a, a, ⟨by linarith, hab⟩, by ring⟩
     · rintro y ⟨x, x_in, rfl⟩
       exact ⟨hm x x_in, hM x x_in⟩
   rw [isSup_iff] at y_sup
   rcases y_sup with ⟨y_maj, u, lim_u, u_dans⟩
   choose v hv using u_dans
-  cases' forall_and_distrib.mp hv with v_dans hufv
+  cases' forall_and.mp hv with v_dans hufv
   replace hufv : u = f ∘ v := funext hufv
   rcases bolzano_weierstrass v_dans with ⟨x₀, x₀_in, φ, φ_extr, lim_vφ⟩
   use x₀, x₀_in
@@ -366,7 +362,7 @@ example {a b : ℝ} (hab : a ≤ b) (hf : ∀ x ∈ Icc a b, ContinuousAtPt f x)
     apply unique_limit lim
     rw [hufv] at lim_u
     exact subseq_tendsto_of_tendsto lim_u φ_extr
-  rw [Unique]
+  rw [unique]
   apply y_maj
   use x, x_dans
   -- sorry
@@ -409,6 +405,7 @@ example (f : ℝ → ℝ) (hf : ∀ x, ContinuousAtPt f x) (h₀ : f 0 < 0) (h�
     apply lim_le this
     intro n
     have : f (u n) < 0 := (u_dans n).right
+    dsimp
     linarith
   -- sorry
   have x₀_1 : x₀ < 1 :=
@@ -448,7 +445,7 @@ example (f : ℝ → ℝ) (hf : ∀ x, ContinuousAtPt f x) (h₀ : f 0 < 0) (h�
       have : 1 / (n + 1 : ℝ) > 0 := Nat.one_div_pos_of_nat
       linarith
     -- sorry
-    dsimp [A] at not_in
+    dsimp at not_in
     -- sorry
     push_neg  at not_in
     have lim : SeqLimit (fun n => f (x₀ + 1 / (n + 1))) (f x₀) :=
@@ -462,4 +459,3 @@ example (f : ℝ → ℝ) (hf : ∀ x, ContinuousAtPt f x) (h₀ : f 0 < 0) (h�
     exact not_in n (hN n hn)
   -- sorry
   linarith
-
