@@ -1,6 +1,7 @@
-import tuto_lib
+import Tutorials.TutoLib
+
 /-
-This file continues the elementary study of limits of sequences. 
+This file continues the elementary study of limits of sequences.
 It can be skipped if the previous file was too easy, it won't introduce
 any new tactic or trick.
 
@@ -29,40 +30,27 @@ unique_limit : seq_limit u l → seq_limit u l' → l = l'
 
 def extraction (φ : ℕ → ℕ) := ∀ n m, n < m → φ n < φ m
 -/
-
-
-variable { φ : ℕ → ℕ}
+variable {φ : ℕ → ℕ}
 
 /-
 The next lemma is proved by an easy induction, but we haven't seen induction
-in this tutorial. If you did the natural number game then you can delete 
+in this tutorial. If you did the natural number game then you can delete
 the proof below and try to reconstruct it.
 -/
 /-- An extraction is greater than id -/
-lemma id_le_extraction' : extraction φ → ∀ n, n ≤ φ n :=
-begin
-  intros hyp n,
-  induction n with n hn,
-  { exact nat.zero_le _ },
-  { exact nat.succ_le_of_lt (by linarith [hyp n (n+1) (by linarith)]) },
-end
+theorem id_le_extraction' : Extraction φ → ∀ n, n ≤ φ n := by
+  intro hyp n
+  induction' n with n hn
+  · exact Nat.zero_le _
+  · exact Nat.succ_le_of_lt (by linarith [hyp n (n + 1) (by linarith)])
 
-/-- Extractions take arbitrarily large values for arbitrarily large 
-inputs. -/
 -- 0039
-lemma extraction_ge : extraction φ → ∀ N N', ∃ n ≥ N', φ n ≥ N :=
-begin
+/-- Extractions take arbitrarily large values for arbitrarily large
+inputs. -/
+theorem extraction_ge : Extraction φ → ∀ N N', ∃ n ≥ N', φ n ≥ N := by
   sorry
-end
 
-/-- A real number `a` is a cluster point of a sequence `u` 
-if `u` has a subsequence converging to `a`. 
-
-def cluster_point (u : ℕ → ℝ) (a : ℝ) :=
-∃ φ, extraction φ ∧ seq_limit (u ∘ φ) a
--/
-
-variables {u : ℕ → ℝ} {a l : ℝ}
+variable {u : ℕ → ℝ} {a l : ℝ}
 
 /-
 In the exercise, we use `∃ n ≥ N, ...` which is the abbreviation of
@@ -72,54 +60,40 @@ Lean can read this abbreviation, but displays it as the confusing:
 One gets used to it. Alternatively, one can get rid of it using the lemma
   exists_prop {p q : Prop} : (∃ (h : p), q) ↔ p ∧ q
 -/
-
+-- 0040
 /-- If `a` is a cluster point of `u` then there are values of
 `u` arbitrarily close to `a` for arbitrarily large input. -/
--- 0040
-lemma near_cluster :
-  cluster_point u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n - a| ≤ ε :=
-begin
+theorem near_cluster : ClusterPoint u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n - a| ≤ ε := by
   sorry
-end
 
 /-
-The above exercice can be done in five lines. 
+The above exercice can be done in five lines.
 Hint: you can use the anonymous constructor syntax when proving
 existential statements.
 -/
-
-/-- If `u` tends to `l` then its subsequences tend to `l`. -/
 -- 0041
-lemma subseq_tendsto_of_tendsto' (h : seq_limit u l) (hφ : extraction φ) :
-seq_limit (u ∘ φ) l :=
-begin
+/-- If `u` tends to `l` then its subsequences tend to `l`. -/
+theorem subseq_tendsto_of_tendsto' (h : SeqLimit u l) (hφ : Extraction φ) : SeqLimit (u ∘ φ) l := by
   sorry
-end
 
-/-- If `u` tends to `l` all its cluster points are equal to `l`. -/
 -- 0042
-lemma cluster_limit (hl : seq_limit u l) (ha : cluster_point u a) : a = l :=
-begin
+/-- If `u` tends to `l` all its cluster points are equal to `l`. -/
+theorem cluster_limit (hl : SeqLimit u l) (ha : ClusterPoint u a) : a = l := by
   sorry
-end
 
 /-- Cauchy_sequence sequence -/
-def cauchy_sequence (u : ℕ → ℝ) := ∀ ε > 0, ∃ N, ∀ p q, p ≥ N → q ≥ N → |u p - u q| ≤ ε
+def CauchySequence (u : ℕ → ℝ) :=
+  ∀ ε > 0, ∃ N, ∀ p q, p ≥ N → q ≥ N → |u p - u q| ≤ ε
 
 -- 0043
-example : (∃ l, seq_limit u l) → cauchy_sequence u :=
-begin
+example : (∃ l, SeqLimit u l) → CauchySequence u := by
   sorry
-end
 
-
-/- 
+/-
 In the next exercise, you can reuse
  near_cluster : cluster_point u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n - a| ≤ ε
 -/
 -- 0044
-example (hu : cauchy_sequence u) (hl : cluster_point u l) : seq_limit u l :=
-begin
+example (hu : CauchySequence u) (hl : ClusterPoint u l) : SeqLimit u l := by
   sorry
-end
 

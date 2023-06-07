@@ -1,6 +1,6 @@
-import data.real.basic
+import Mathlib.Data.Real.Basic
 
-open_locale classical
+open Classical
 
 /-
 Theoretical negations.
@@ -14,60 +14,45 @@ that are used by those tactics. Of course we can use
 
 If this doesn't sound like fun then skip ahead to the next file.
 -/
+section NegationProp
 
-section negation_prop
-
-variables P Q : Prop
+variable (P Q : Prop)
 
 -- 0055
-example : (P → Q) ↔ (¬ Q → ¬ P) :=
-begin
+example : P → Q ↔ ¬Q → ¬P := by
   sorry
-end
 
 -- 0056
-lemma non_imp (P Q : Prop) : ¬ (P → Q) ↔ P ∧ ¬ Q :=
-begin
+theorem non_imp (P Q : Prop) : ¬(P → Q) ↔ P ∧ ¬Q := by
   sorry
-end
 
 -- In the next one, let's use the axiom
 -- propext {P Q : Prop} : (P ↔ Q) → P = Q
-
 -- 0057
-example (P : Prop) : ¬ P ↔ P = false :=
-begin
+example (P : Prop) : ¬P ↔ P = False := by
   sorry
-end
 
-end negation_prop
+end NegationProp
 
-section negation_quantifiers
-variables (X : Type) (P : X → Prop)
+section NegationQuantifiers
+
+variable (X : Type) (P : X → Prop)
 
 -- 0058
-example : ¬ (∀ x, P x) ↔ ∃ x, ¬ P x :=
-begin
+example : (¬∀ x, P x) ↔ ∃ x, ¬P x := by
   sorry
-end
 
 -- 0059
-example : ¬ (∃ x, P x) ↔ ∀ x, ¬ P x :=
-begin
+example : (¬∃ x, P x) ↔ ∀ x, ¬P x := by
   sorry
-end
 
 -- 0060
-example (P : ℝ → Prop) : ¬ (∃ ε > 0, P ε) ↔ ∀ ε > 0, ¬ P ε :=
-begin
+example (P : ℝ → Prop) : (¬∃ ε > 0, P ε) ↔ ∀ ε > 0, ¬P ε := by
   sorry
-end
 
 -- 0061
-example (P : ℝ → Prop) : ¬ (∀ x > 0, P x) ↔ ∃ x > 0, ¬ P x :=
-begin
+example (P : ℝ → Prop) : (¬∀ x > 0, P x) ↔ ∃ x > 0, ¬P x := by
   sorry
-end
 
-end negation_quantifiers
+end NegationQuantifiers
 

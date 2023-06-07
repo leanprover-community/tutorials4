@@ -1,12 +1,9 @@
-import data.real.basic
-import algebra.group.pi
-import tuto_lib
-
-notation `|`x`|` := abs x
-
+import Mathlib.Data.Real.Basic
+import Mathlib.Algebra.Group.Pi
+import Tutorials.TutoLib
 /-
 In this file we manipulate the elementary definition of limits of
-sequences of real numbers. 
+sequences of real numbers.
 mathlib has a much more general definition of limits, but here
 we want to practice using the logical operators and relations
 covered in the previous files.
@@ -42,27 +39,24 @@ where `by linarith` will provide the proof of `δ/2 > 0` expected by Lean.
 
 We'll take this opportunity to use two new tactics:
 
-`norm_num` will perform numerical normalization on the goal and `norm_num at h` 
+`norm_num` will perform numerical normalization on the goal and `norm_num at h`
 will do the same in assumption `h`. This will get rid of trivial calculations on numbers,
 like replacing |l - l| by zero in the next exercise.
 
-`congr'` will try to prove equalities between applications of functions by recursively 
-proving the arguments are the same. 
+`congr'` will try to prove equalities between applications of functions by recursively
+proving the arguments are the same.
 For instance, if the goal is `f x + g y = f z + g t` then congr will replace it by
 two goals: `x = z` and `y = t`.
-You can limit the recursion depth by specifying a natural number after `congr'`. 
+You can limit the recursion depth by specifying a natural number after `congr'`.
 For instance, in the above example, `congr' 1` will give new goals
 `f x = f z` and `g y = g t`, which only inspect arguments of the addition and not deeper.
 -/
-
-variables (u v w : ℕ → ℝ) (l l' : ℝ)
+variable (u v w : ℕ → ℝ) (l l' : ℝ)
 
 -- If u is constant with value l then u tends to l
 -- 0033
-example : (∀ n, u n = l) → seq_limit u l :=
-begin
+example : (∀ n, u n = l) → SeqLimit u l := by
   sorry
-end
 
 /- When dealing with absolute values, we'll use lemmas:
 
@@ -72,18 +66,15 @@ abs_add (x y : ℝ) : |x + y| ≤ |x| + |y|
 
 abs_sub_comm (x y : ℝ) : |x - y| = |y - x|
 
-You should probably write them down on a sheet of paper that you keep at 
+You should probably write them down on a sheet of paper that you keep at
 hand since they are used in many exercises.
 -/
-
 -- Assume l > 0. Then u tends to l implies u n ≥ l/2 for large enough n
 -- 0034
-example (hl : l > 0) : seq_limit u l → ∃ N, ∀ n ≥ N, u n ≥ l/2 :=
-begin
+example (hl : l > 0) : SeqLimit u l → ∃ N, ∀ n ≥ N, u n ≥ l / 2 := by
   sorry
-end
 
-/- 
+/-
 When dealing with max, you can use
 
 ge_max_iff (p q r) : r ≥ max p q  ↔ r ≥ p ∧ r ≥ q
@@ -92,34 +83,30 @@ le_max_left p q : p ≤ max p q
 
 le_max_right p q : q ≤ max p q
 
-You should probably add them to the sheet of paper where you wrote 
+You should probably add them to the sheet of paper where you wrote
 the `abs` lemmas since they are used in many exercises.
 
 Let's see an example.
 -/
-
 -- If u tends to l and v tends l' then u+v tends to l+l'
-example (hu : seq_limit u l) (hv : seq_limit v l') :
-seq_limit (u + v) (l + l') :=
-begin
-  intros ε ε_pos,
-  cases hu (ε/2) (by linarith) with N₁ hN₁,
-  cases hv (ε/2) (by linarith) with N₂ hN₂,
-  use max N₁ N₂,
-  intros n hn,
-  cases ge_max_iff.mp hn with hn₁ hn₂,
-  have fact₁ : |u n - l| ≤ ε/2,
-    from hN₁ n (by linarith),  -- note the use of `from`.
-                               -- This is an alias for `exact`, 
-                               -- but reads nicer in this context 
-  have fact₂ : |v n - l'| ≤ ε/2,
-    from hN₂ n (by linarith), 
+example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') := by
+  intro ε ε_pos
+  cases' hu (ε / 2) (by linarith) with N₁ hN₁
+  cases' hv (ε / 2) (by linarith) with N₂ hN₂
+  use max N₁ N₂
+  intro n hn
+  cases' ge_max_iff.mp hn with hn₁ hn₂
+  have fact₁ : |u n - l| ≤ ε / 2 := hN₁ n (by linarith)
+  -- note the use of `from`.
+  -- This is an alias for `exact`,
+  -- but reads nicer in this context
+  have fact₂ : |v n - l'| ≤ ε / 2 := hN₂ n (by linarith)
   calc
-  |(u + v) n - (l + l')| = |u n + v n - (l + l')|   : rfl
-                     ... = |(u n - l) + (v n - l')| : by congr' 1 ; ring
-                     ... ≤ |u n - l| + |v n - l'|   : by apply abs_add
-                     ... ≤  ε                       : by linarith,
-end
+    |(u + v) n - (l + l')| = |u n + v n - (l + l')| := rfl
+    _ = |u n - l + (v n - l')| := by congr 1 <;> ring
+    _ ≤ |u n - l| + |v n - l'| := by apply abs_add
+    _ ≤ ε := by linarith
+
 
 /-
 In the above proof, we used `have` to prepare facts for `linarith` consumption in the last line.
@@ -128,66 +115,50 @@ of the same statement.
 Another variation we introduce is rewriting using `ge_max_iff` and letting `linarith` handle the
 conjunction, instead of creating two new assumptions.
 -/
-
-example (hu : seq_limit u l) (hv : seq_limit v l') :
-seq_limit (u + v) (l + l') :=
-begin
-  intros ε ε_pos,
-  cases hu (ε/2) (by linarith) with N₁ hN₁,
-  cases hv (ε/2) (by linarith) with N₂ hN₂,
-  use max N₁ N₂,
-  intros n hn,
-  rw ge_max_iff at hn,
+example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') := by
+  intro ε ε_pos
+  cases' hu (ε / 2) (by linarith) with N₁ hN₁
+  cases' hv (ε / 2) (by linarith) with N₂ hN₂
+  use max N₁ N₂
+  intro n hn
+  rw [ge_max_iff] at hn
   calc
-  |(u + v) n - (l + l')| = |u n + v n - (l + l')|   : rfl
-                     ... = |(u n - l) + (v n - l')| : by congr' 1 ; ring
-                     ... ≤ |u n - l| + |v n - l'|   : by apply abs_add
-                     ... ≤  ε                       : by linarith [hN₁ n (by linarith), hN₂ n (by linarith)],
-end
+    |(u + v) n - (l + l')| = |u n + v n - (l + l')| := rfl
+    _ = |u n - l + (v n - l')| := by congr 1 <;> ring
+    _ ≤ |u n - l| + |v n - l'| := by apply abs_add
+    _ ≤ ε := by linarith [hN₁ n (by linarith), hN₂ n (by linarith)]
 
-/- Let's do something similar: the squeezing theorem. -/
+
+-- Let's do something similar: the squeezing theorem.
 -- 0035
-example (hu : seq_limit u l) (hw : seq_limit w l)
-(h : ∀ n, u n ≤ v n)
-(h' : ∀ n, v n ≤ w n) : seq_limit v l :=
-begin
+example (hu : SeqLimit u l) (hw : SeqLimit w l) (h : ∀ n, u n ≤ v n) (h' : ∀ n, v n ≤ w n) :
+    SeqLimit v l := by
   sorry
 
-end
-
-/- What about < ε? -/
+-- What about < ε?
 -- 0036
-example (u l) : seq_limit u l ↔
- ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| < ε :=
-begin
+example (u l) : SeqLimit u l ↔ ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| < ε := by
   sorry
-end
 
 /- In the next exercise, we'll use
 
 eq_of_abs_sub_le_all (x y : ℝ) : (∀ ε > 0, |x - y| ≤ ε) → x = y
 -/
-
 -- A sequence admits at most one limit
 -- 0037
-example : seq_limit u l → seq_limit u l' → l = l' :=
-begin
+example : SeqLimit u l → SeqLimit u l' → l = l' := by
   sorry
-end
 
 /-
 Let's now practice deciphering definitions before proving.
 -/
+def NonDecreasing (u : ℕ → ℝ) :=
+  ∀ n m, n ≤ m → u n ≤ u m
 
-def non_decreasing (u : ℕ → ℝ) := ∀ n m, n ≤ m → u n ≤ u m
-
-def is_seq_sup (M : ℝ) (u : ℕ → ℝ) :=
-(∀ n, u n ≤ M) ∧ ∀ ε > 0, ∃ n₀, u n₀ ≥ M - ε
+def IsSeqSup (M : ℝ) (u : ℕ → ℝ) :=
+  (∀ n, u n ≤ M) ∧ ∀ ε > 0, ∃ n₀, u n₀ ≥ M - ε
 
 -- 0038
-example (M : ℝ) (h : is_seq_sup M u) (h' : non_decreasing u) :
-seq_limit u M :=
-begin
+example (M : ℝ) (h : IsSeqSup M u) (h' : NonDecreasing u) : SeqLimit u M := by
   sorry
-end
 
