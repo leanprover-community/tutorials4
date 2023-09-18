@@ -6,13 +6,13 @@ Negations, proof by contradiction and contraposition.
 This file introduces the logical rules and tactics related to negation:
 exfalso, by_contradiction, contrapose, by_cases and push_neg.
 
-There is a special statement denoted by `false` which, by definition,
+There is a special statement denoted by `False` which, by definition,
 has no proof.
 
-So `false` implies everything. Indeed `false → P` means any proof of
-`false` could be turned into a proof of P.
+So `False` implies everything. Indeed `False → P` means any proof of
+`False` could be turned into a proof of P.
 This fact is known by its latin name
-"ex falso quod libet" (from false follows whatever you want).
+"ex falso quod libet" (from False follows whatever you want).
 Hence Lean's tactic to invoke this is called `exfalso`.
 -/
 example : False → 0 = 1 := by
@@ -21,12 +21,12 @@ example : False → 0 = 1 := by
   exact h
 
 /-
-The preceding example suggests that this definition of `false` isn't very useful.
+The preceding example suggests that this definition of `False` isn't very useful.
 But actually it allows us to define the negation of a statement P as
-"P implies false" that we can read as "if P were true, we would get
+"P implies False" that we can read as "if P were true, we would get
 a contradiction". Lean denotes this by `¬ P`.
 
-One can prove that (¬ P) ↔ (P ↔ false). But in practice we directly
+One can prove that (¬ P) ↔ (P ↔ False). But in practice we directly
 use the definition of `¬ P`.
 -/
 example {x : ℝ} : ¬x < x := by
@@ -61,10 +61,10 @@ Together those two implications form the principle of double negation eliminatio
   not_not {P : Prop} : (¬ ¬ P) ↔ P
 
 The implication `¬ ¬ P → P` is the basis for proofs by contradiction:
-in order to prove P, it suffices to prove ¬¬ P, ie `¬ P → false`.
+in order to prove P, it suffices to prove ¬¬ P, ie `¬ P → False`.
 
 Of course there is no need to keep explaining all this. The tactic
-`by_contradiction Hyp` will transform any goal P into `false` and
+`by_contradiction Hyp` will transform any goal P into `False` and
 add Hyp : ¬ P to the local context.
 
 Let's return to a proof from the 5th file: uniqueness of limits for a sequence.
@@ -231,4 +231,3 @@ Let's use this trick, together with:
 -- 0054
 example (f : ℝ → ℝ) : (∀ x y, x < y → f x < f y) ↔ ∀ x y, x ≤ y ↔ f x ≤ f y := by
   sorry
-
