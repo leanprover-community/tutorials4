@@ -123,8 +123,8 @@ example (P Q : Prop) (h : ¬Q → ¬P) : P → Q := by
 
 /-
 In the next exercise, we'll use
- odd n : ∃ k, n = 2*k + 1
- int.odd_iff_not_even {n : ℤ} : odd n ↔ ¬ even n
+ Odd n : ∃ k, n = 2*k + 1
+ Int.odd_iff_not_even {n : ℤ} : odd n ↔ ¬ even n
 -/
 -- 0048
 example (n : ℤ) : Even (n ^ 2) ↔ Even n := by
@@ -134,7 +134,7 @@ example (n : ℤ) : Even (n ^ 2) ↔ Even n := by
 As a last step on our law of the excluded middle tour, let's notice that, especially
 in pure logic exercises, it can sometimes be useful to use the
 excluded middle axiom in its original form:
-  classical.em : ∀ P, P ∨ ¬ P
+  Classical.em : ∀ P, P ∨ ¬ P
 
 Instead of applying this lemma and then using the `cases` tactic, we
 have the shortcut
@@ -231,3 +231,4 @@ Let's use this trick, together with:
 -- 0054
 example (f : ℝ → ℝ) : (∀ x y, x < y → f x < f y) ↔ ∀ x y, x ≤ y ↔ f x ≤ f y := by
   sorry
+
