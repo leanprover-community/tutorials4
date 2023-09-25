@@ -9,7 +9,7 @@
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "editor.unicodeHighlight.ambiguousCharacters": false,
-  "editor.unicodeHighlight.ambiguousCharacters": false
+  "editor.unicodeHighlight.nonBasicASCII": false,
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
