@@ -1,23 +1,4 @@
-import Mathlib.Data.Real.Basic
-import Mathlib.Algebra.Group.Pi
-import Mathlib.Tactic.Relation.Rfl
-
--- todo: fix in mathlib
-open Lean Meta Elab Mathlib Tactic in
-elab "rfl" : tactic => withMainContext do
-  let tgt := (← getMainTarget).cleanupAnnotations
-  let .app (.app rel _) _ := tgt
-    | throwError "reflexivity lemmas only apply to binary relations, not {indentExpr tgt}"
-  let s ← saveState
-  for lem in ← (reflExt.getState (← getEnv)).getMatch rel do
-    try
-      liftMetaTactic (·.apply (← mkConstWithFreshMVarLevels lem))
-      return
-    catch e =>
-      s.restore
-      throw e
-  throwError "rfl failed, no lemma with @[refl] applies"
-
+import Tutorials.TutoLib
 
 /-
 In this file, we'll learn about the ∀ quantifier, and the disjunction
@@ -38,13 +19,13 @@ with type X, and call it x.
 Note also we don't need to give the type of x in the expression `∀ x, P x`
 as long as the type of P is clear to Lean, which can then infer the type of x.
 
-Let's define two predicates to play with ∀.
--/
-def EvenFun (f : ℝ → ℝ) :=
-  ∀ x, f (-x) = f x
+Let's consider two predicates to play with ∀.
 
-def OddFun (f : ℝ → ℝ) :=
-  ∀ x, f (-x) = -f x
+`EvenFun (f : ℝ → ℝ) : ∀ x, f (-x) = f x`
+
+`OddFun (f : ℝ → ℝ) :  ∀ x, f (-x) = -f x`.
+
+-/
 
 /-
 In the next proof, we also take the opportunity to introduce the
@@ -83,7 +64,7 @@ The main such tactic is `rw`.
 
 The same property of `rw` explain why the first computation line
 is necessary, although its proof is simply `rfl`.
-Before that line, `rw hf x` won't find anything like `f (-x)` hence
+Before that line, `rw [hf x]` won't find anything like `f (-x)` hence
 will give up.
 The last line is not necessary however, since it only proves
 something that is true by definition, and is not followed by
@@ -95,7 +76,7 @@ We can also gather several rewrites using a list of expressions.
 
 One last trick is that `rw` can take a list of expressions to use for
 rewriting. For instance `rw [h₁, h₂, h₃]` is equivalent to three
-lines `rw h₁`, `rw h₂` and `rw h₃`. Note that you can inspect the tactic
+lines `rw [h₁]`, `rw [h₂]` and `rw [h₃]`. Note that you can inspect the tactic
 state between those rewrites when reading a proof using this syntax. You
 simply need to move the cursor inside the list.
 
@@ -123,12 +104,13 @@ example (f g : ℝ → ℝ) : OddFun f → OddFun g → OddFun (g ∘ f) := by
 Let's have more quantifiers, and play with forward and backward reasoning.
 
 In the next definitions, note how `∀ x₁, ∀ x₂` is abreviated to `∀ x₁ x₂`.
--/
-def NonDecreasing (f : ℝ → ℝ) :=
-  ∀ x₁ x₂, x₁ ≤ x₂ → f x₁ ≤ f x₂
 
-def NonIncreasing (f : ℝ → ℝ) :=
-  ∀ x₁ x₂, x₁ ≤ x₂ → f x₁ ≥ f x₂
+`NonDecreasing (f : ℝ → ℝ) := ∀ x₁ x₂, x₁ ≤ x₂ → f x₁ ≤ f x₂`
+
+`NonIncreasing (f : ℝ → ℝ) := ∀ x₁ x₂, x₁ ≤ x₂ → f x₁ ≥ f x₂`
+
+-/
+
 
 -- Let's be very explicit and use forward reasoning first.
 example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonDecreasing (g ∘ f) := by
@@ -145,7 +127,7 @@ they could be inferred from the type of h.
 We could have written `hf _ _ h` and Lean would have filled the holes denoted by _.
 
 Even better we could have written the definition
-of `non_decreasing` as: ∀ {x₁ x₂}, x₁ ≤ x₂ → f x₁ ≤ f x₂, with curly braces to denote
+of `NonDecreasing` as: ∀ {x₁ x₂}, x₁ ≤ x₂ → f x₁ ≤ f x₂, with curly braces to denote
 implicit arguments.
 
 But let's leave that aside for now. One possible variation on the above proof is to
@@ -200,20 +182,20 @@ Let's switch to disjunctions now. Lean denotes by ∨ the
 logical OR operator.
 
 In order to make use of an assumption
-  hyp : P ∨ Q
+  `hyp : P ∨ Q`
 we use the cases tactic:
-  cases hyp with hP hQ
-which creates two proof branches: one branch assuming hP : P,
-and one branch assuming hQ : Q.
+  `cases hyp with hP hQ`
+which creates two proof branches: one branch assuming `hP : P`,
+and one branch assuming `hQ : Q`.
 
-In order to directly prove a goal P ∨ Q,
-we use either the `left` tactic and prove P or the `right`
-tactic and prove Q.
+In order to directly prove a goal `P ∨ Q`,
+we use either the `left` tactic and prove `P` or the `right`
+tactic and prove `Q`.
 
 In the next proof we use `ring` and `linarith` to get rid of
 easy computations or inequalities, as well as one lemma:
 
-  mul_eq_zero : a*b = 0 ↔ a = 0 ∨ b = 0
+  `mul_eq_zero : a*b = 0 ↔ a = 0 ∨ b = 0`
 -/
 example (a b : ℝ) : a = a * b → a = 0 ∨ b = 1 := by
   intro hyp
@@ -235,7 +217,7 @@ example (x y : ℝ) : x ^ 2 = y ^ 2 → x = y ∨ x = -y := by
 
 /-
 In the next exercise, we can use:
-  eq_or_lt_of_le : x ≤ y → x = y ∨ x < y
+  `eq_or_lt_of_le : x ≤ y → x = y ∨ x < y`
 -/
 -- 0027
 example (f : ℝ → ℝ) : NonDecreasing f ↔ ∀ x y, x < y → f x ≤ f y := by
@@ -243,7 +225,7 @@ example (f : ℝ → ℝ) : NonDecreasing f ↔ ∀ x y, x < y → f x ≤ f y :
 
 /-
 In the next exercise, we can use:
-  le_total x y : x ≤ y ∨ y ≤ x
+  `le_total x y : x ≤ y ∨ y ≤ x`
 -/
 -- 0028
 example (f : ℝ → ℝ) (h : NonDecreasing f) (h' : ∀ x, f (f x) = x) : ∀ x, f x = x := by

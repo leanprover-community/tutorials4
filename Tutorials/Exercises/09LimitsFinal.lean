@@ -23,7 +23,7 @@ as well as a lemma from the previous file:
 Let's start with a variation on a known exercise.
 -/
 -- 0071
-theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∃ N, ∀ n ≥ N, y ≤ u n) : y ≤ x := by
+theorem le_lim' {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∃ N, ∀ n ≥ N, y ≤ u n) : y ≤ x := by
   sorry
 
 /-

@@ -183,9 +183,11 @@ universal quantifier requires excluded middle for the first implication.
 In order to prove this, we can use either
 * a double proof by contradiction
 * a contraposition, not_not : (¬ ¬ P) ↔ P) and a proof by contradiction.
+
+Recall we have 
+`EvenFun (f : ℝ → ℝ) := ∀ x, f (-x) = f x`
+
 -/
-def EvenFun (f : ℝ → ℝ) :=
-  ∀ x, f (-x) = f x
 
 -- 0051
 example (f : ℝ → ℝ) : ¬EvenFun f ↔ ∃ x, f (-x) ≠ f x := by

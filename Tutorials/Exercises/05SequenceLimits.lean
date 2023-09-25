@@ -103,7 +103,7 @@ example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') := 
   have fact₂ : |v n - l'| ≤ ε / 2 := hN₂ n (by linarith)
   calc
     |(u + v) n - (l + l')| = |u n + v n - (l + l')| := rfl
-    _ = |u n - l + (v n - l')| := by congr 1 <;> ring
+    _ = |u n - l + (v n - l')| := by ring_nf
     _ ≤ |u n - l| + |v n - l'| := by apply abs_add
     _ ≤ ε := by linarith
 
@@ -124,7 +124,7 @@ example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') := 
   rw [ge_max_iff] at hn
   calc
     |(u + v) n - (l + l')| = |u n + v n - (l + l')| := rfl
-    _ = |u n - l + (v n - l')| := by congr 1 <;> ring
+    _ = |u n - l + (v n - l')| := by ring_nf
     _ ≤ |u n - l| + |v n - l'| := by apply abs_add
     _ ≤ ε := by linarith [hN₁ n (by linarith), hN₂ n (by linarith)]
 
@@ -151,14 +151,15 @@ example : SeqLimit u l → SeqLimit u l' → l = l' := by
 
 /-
 Let's now practice deciphering definitions before proving.
+
 -/
-def NonDecreasing (u : ℕ → ℝ) :=
+def NonDecreasingSeq (u : ℕ → ℝ) :=
   ∀ n m, n ≤ m → u n ≤ u m
 
 def IsSeqSup (M : ℝ) (u : ℕ → ℝ) :=
   (∀ n, u n ≤ M) ∧ ∀ ε > 0, ∃ n₀, u n₀ ≥ M - ε
 
 -- 0038
-example (M : ℝ) (h : IsSeqSup M u) (h' : NonDecreasing u) : SeqLimit u M := by
+example (M : ℝ) (h : IsSeqSup M u) (h' : NonDecreasingSeq u) : SeqLimit u M := by
   sorry
 
