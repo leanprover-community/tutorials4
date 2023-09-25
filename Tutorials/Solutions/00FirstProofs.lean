@@ -271,12 +271,12 @@ theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : Limit u x) (ineq : ∀ n, y �
     _ = x + (u N - x) := by linarith
     -- We'll need `add_le_add` which says `a ≤ b` and `c ≤ d` implies `a + c ≤ b + d`
     -- We need a lemma saying `z ≤ |z|`. Because we don't know the name of this lemma,
-    -- let's use `library_search`. Because searching through the library is slow,
+    -- let's use `exact?`. Because searching through the library is slow,
     -- Lean will write what it found in the Lean message window when cursor is on
     -- that line, so that we can replace it by the lemma. We see `le_abs_self`, which
     -- says `a ≤ |a|`, exactly what we're looking for.
     _ ≤ x + |u N - x| :=
-      (add_le_add (by linarith) (by library_search))
+      (add_le_add (by linarith) (by exact?))
     _ ≤ x + ε := add_le_add (by linarith) (HN N (by linarith))
 
 /-
@@ -296,8 +296,8 @@ theorem inv_succ_pos : ∀ n : ℕ, 1 / (n + 1 : ℝ) > 0 := by
   intro n
   -- Since we don't know the name of the relevant lemma, asserting that the inverse of
   -- a positive number is positive, let's state that is suffices
-  -- to prove that `n+1`, seen as a real number, is positive, and ask `library_search`
-  suffices (n + 1 : ℝ) > 0 by library_search
+  -- to prove that `n+1`, seen as a real number, is positive, and ask `exact?`
+  suffices (n + 1 : ℝ) > 0 by exact?
   -- Now we want to reduce to a statement about natural numbers, not real numbers
   -- coming from natural numbers.
   norm_cast
@@ -307,9 +307,9 @@ theorem inv_succ_pos : ∀ n : ℕ, 1 / (n + 1 : ℝ) > 0 := by
 /-
 That was a pretty long proof for an obvious fact. And stating it as a lemma feels
 stupid, so let's find a way to write it on one line in case we want to include it
-in some other proof without stating a lemma. First the `library_search` call
+in some other proof without stating a lemma. First the `exact?` call
 above displays the name of the relevant lemma: `one_div_pos`. We can also
-replace the `linarith` call on the last line by `library_search` to learn the name
+replace the `linarith` call on the last line by `exact?` to learn the name
 of the lemma `nat.succ_pos` asserting that the successor of a natural number is
 positive. There is also a variant on `norm_cast` that combines it with `exact`.
 The term mode analogue of `intro` is `λ`. We get down to:

@@ -4,6 +4,16 @@ import Mathlib.Topology.Sequences
 
 attribute [instance] Classical.propDecidable
 
+def NonDecreasing (f : ℝ → ℝ) :=
+  ∀ x₁ x₂, x₁ ≤ x₂ → f x₁ ≤ f x₂
+
+def NonIncreasing (f : ℝ → ℝ) :=
+  ∀ x₁ x₂, x₁ ≤ x₂ → f x₁ ≥ f x₂
+
+def EvenFun (f : ℝ → ℝ) := ∀ x, f (-x) = f x
+
+def OddFun (f : ℝ → ℝ) :=  ∀ x, f (-x) = -f x
+
 /-
 Lemmas from that file were hidden in my course, or restating things which
 were proved without name in previous files.

@@ -23,7 +23,7 @@ as well as a lemma from the previous file:
 Let's start with a variation on a known exercise.
 -/
 -- 0071
-theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∃ N, ∀ n ≥ N, y ≤ u n) : y ≤ x := by
+theorem le_lim' {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∃ N, ∀ n ≥ N, y ≤ u n) : y ≤ x := by
   -- sorry
   apply le_of_le_add_all
   intro ε ε_pos
@@ -346,8 +346,8 @@ example {a b : ℝ} (hab : a ≤ b) (hf : ∀ x ∈ Icc a b, ContinuousAtPt f x)
     · rintro y ⟨x, x_in, rfl⟩
       exact ⟨hm x x_in, hM x x_in⟩
   rw [isSup_iff] at y_sup
-  rcases y_sup with ⟨y_maj, u, lim_u, u_dans⟩
-  choose v hv using u_dans
+  rcases y_sup with ⟨y_maj, u, lim_u, u_in⟩
+  choose v hv using u_in
   cases' forall_and.mp hv with v_dans hufv
   replace hufv : u = f ∘ v := funext hufv
   rcases bolzano_weierstrass v_dans with ⟨x₀, x₀_in, φ, φ_extr, lim_vφ⟩
@@ -400,11 +400,11 @@ example (f : ℝ → ℝ) (hf : ∀ x, ContinuousAtPt f x) (h₀ : f 0 < 0) (h�
     by
     -- sorry
     rw [isSup_iff] at x₀_sup
-    rcases x₀_sup with ⟨maj_x₀, u, lim_u, u_dans⟩
+    rcases x₀_sup with ⟨_maj_x₀, u, lim_u, u_in⟩
     have : SeqLimit (f ∘ u) (f x₀) := seq_continuous_of_continuous (hf x₀) lim_u
     apply lim_le this
     intro n
-    have : f (u n) < 0 := (u_dans n).right
+    have : f (u n) < 0 := (u_in n).right
     dsimp
     linarith
   -- sorry
@@ -452,7 +452,7 @@ example (f : ℝ → ℝ) (hf : ∀ x, ContinuousAtPt f x) (h₀ : f 0 < 0) (h�
       by
       apply seq_continuous_of_continuous (hf x₀)
       apply limit_const_add_inv_succ
-    apply le_lim lim
+    apply le_lim' lim
     cases' in_I with N hN
     use N
     intro n hn
