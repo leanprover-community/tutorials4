@@ -24,6 +24,8 @@
     "build": true,
     "lake-packages": true,
     ".gitignore": true,
+    ".github": true,
+    "mk_exercises.py": true,
     "lake-manifest.json": true,
     "lakefile.lean": true,
     "lean-toolchain": true,
