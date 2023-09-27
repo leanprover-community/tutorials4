@@ -82,7 +82,7 @@ Also recall the following lemmas:
 `le_max_right p q : q ≤ max p q`
 
 /-- The sequence `u` tends to `+∞`. -/
-`def tendsto_infinity (u : ℕ → ℝ) := ∀ A, ∃ N, ∀ n ≥ N, u n ≥ A`
+`def TendstoInfinity (u : ℕ → ℝ) := ∀ A, ∃ N, ∀ n ≥ N, u n ≥ A`
 -/
 
 -- 0066
