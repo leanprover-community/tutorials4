@@ -39,9 +39,9 @@ theorem unique_limit {u l l'} : SeqLimit u l → SeqLimit u l' → l = l' := by
   apply eq_of_abs_sub_le_all
   intro ε ε_pos
   specialize hl (ε / 2) (by linarith)
-  cases' hl with N hN
+  rcases hl with ⟨N, hN⟩
   specialize hl' (ε / 2) (by linarith)
-  cases' hl' with N' hN'
+  rcases hl' with ⟨N', hN'⟩
   specialize hN (max N N') (le_max_left _ _)
   specialize hN' (max N N') (le_max_right _ _)
   calc
@@ -72,8 +72,8 @@ theorem lt_sup {A : Set ℝ} {x : ℝ} (hx : IsSup A x) : ∀ y, y < x → ∃ a
 theorem squeeze {u v w : ℕ → ℝ} {l} (hu : SeqLimit u l) (hw : SeqLimit w l) (h : ∀ n, u n ≤ v n)
     (h' : ∀ n, v n ≤ w n) : SeqLimit v l := by
   intro ε ε_pos
-  cases' hu ε ε_pos with N hN
-  cases' hw ε ε_pos with N' hN'
+  rcases hu ε ε_pos with ⟨N, hN⟩
+  rcases hw ε ε_pos with ⟨N', hN'⟩
   use max N N'
   intro n hn
   rw [ge_max_iff] at hn
@@ -93,7 +93,7 @@ def TendstoInfinity (u : ℕ → ℝ) :=
 theorem lim_le {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∀ n, u n ≤ y) : x ≤ y := by
   apply le_of_le_add_all
   intro ε ε_pos
-  cases' hu ε ε_pos with N hN
+  rcases hu ε ε_pos with ⟨N, hN⟩
   specialize hN N (by linarith)
   specialize ineg N
   rw [abs_le] at hN
@@ -104,14 +104,14 @@ theorem inv_succ_le_all : ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, 1 / (n + 1 : ℝ
   simp only [Real.dist_eq, sub_zero]
   constructor
   intro h ε ε_pos
-  cases' h (ε / 2) (by linarith) with N hN
+  rcases h (ε / 2) (by linarith) with ⟨N, hN⟩
   use N
   intro n hn
   rw [abs_of_pos (Nat.one_div_pos_of_nat : 1 / (n + 1 : ℝ) > 0)]
   specialize hN n hn
   linarith
   intro h ε ε_pos
-  cases' h ε (by linarith) with N hN
+  rcases h ε (by linarith) with ⟨N, hN⟩
   use N
   intro n hn
   specialize hN n hn
@@ -145,9 +145,9 @@ theorem id_le_extraction {φ} : Extraction φ → ∀ n, n ≤ φ n := by
   · exact Nat.zero_le _
   · exact Nat.succ_le_of_lt (by linarith [hyp n (n + 1) (by linarith)])
 
-theorem seq_limit_id : TendstoInfinity fun n => n := by
+theorem seqLimit_id : TendstoInfinity fun n => n := by
   intro A
-  cases' exists_nat_gt A with N hN
+  rcases exists_nat_gt A with ⟨N, hN⟩
   use N
   intro n hn
   have : (n : ℝ) ≥ N; exact_mod_cast hn
@@ -171,10 +171,10 @@ theorem bolzano_weierstrass {a b : ℝ} {u : ℕ → ℝ} (h : ∀ n, u n ∈ Ic
   intro n hn
   exact le_of_lt (hN n hn)
 
-theorem not_seqLimit_of_tendstoinfinity {u : ℕ → ℝ} : TendstoInfinity u → ∀ x, ¬SeqLimit u x := by
+theorem not_seqLimit_of_tendstoInfinity {u : ℕ → ℝ} : TendstoInfinity u → ∀ x, ¬SeqLimit u x := by
   intro lim_infinie x lim_x
-  cases' lim_x 1 (by linarith) with N hN
-  cases' lim_infinie (x + 2) with N' hN'
+  rcases lim_x 1 (by linarith) with ⟨N, hN⟩
+  rcases lim_infinie (x + 2) with ⟨N', hN'⟩
   let N₀ := max N N'
   specialize hN N₀ (le_max_left _ _)
   specialize hN' N₀ (le_max_right _ _)
@@ -193,14 +193,14 @@ theorem sup_segment {a b : ℝ} {A : Set ℝ} (hnonvide : ∃ x, x ∈ A) (h : A
     exact b_maj
   refine' ⟨sSup A, _, _⟩
   · constructor
-    · cases' hnonvide with x x_in
+    · rcases hnonvide with ⟨x, x_in⟩
       exact le_trans (h x_in).1 (Sup_maj _ x_in)
     · apply csSup_le hnonvide b_maj
   · exact ⟨Sup_maj, fun y => csSup_le hnonvide⟩
 
 theorem subseq_tendsto_of_tendsto (h : SeqLimit u l) (hφ : Extraction φ) : SeqLimit (u ∘ φ) l := by
   intro ε ε_pos
-  cases' h ε ε_pos with N hN
+  rcases h ε ε_pos with ⟨N, hN⟩
   use N
   intro n hn
   apply hN
@@ -212,7 +212,7 @@ theorem subseq_tendsto_of_tendsto (h : SeqLimit u l) (hφ : Extraction φ) : Seq
 open Lean Elab Tactic
 
 macro  "check_me" : tactic => `(tactic| (
-   repeat unfold seq_limit
+   repeat unfold SeqLimit
    repeat unfold continue_en
    push_neg
    try simp only [exists_prop]

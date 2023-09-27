@@ -7,28 +7,27 @@ any new tactic or trick.
 
 Remember useful lemmas:
 
-abs_le {x y : ℝ} : |x| ≤ y ↔ -y ≤ x ∧ x ≤ y
+`abs_le {x y : ℝ} : |x| ≤ y ↔ -y ≤ x ∧ x ≤ y`
 
-abs_add (x y : ℝ) : |x + y| ≤ |x| + |y|
+`abs_add (x y : ℝ) : |x + y| ≤ |x| + |y|`
 
-abs_sub_comm (x y : ℝ) : |x - y| = |y - x|
+`abs_sub_comm (x y : ℝ) : |x - y| = |y - x|`
 
-ge_max_iff (p q r) : r ≥ max p q  ↔ r ≥ p ∧ r ≥ q
+`ge_max_iff (p q r) : r ≥ max p q  ↔ r ≥ p ∧ r ≥ q`
 
-le_max_left p q : p ≤ max p q
+`le_max_left p q : p ≤ max p q`
 
-le_max_right p q : q ≤ max p q
+`le_max_right p q : q ≤ max p q`
 
 and the definition:
 
-def seq_limit (u : ℕ → ℝ) (l : ℝ) : Prop :=
-∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε
+`def SeqLimit (u : ℕ → ℝ) (l : ℝ) : Prop := ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε`
 
 You can also use a property proved in the previous file:
 
-unique_limit : seq_limit u l → seq_limit u l' → l = l'
+`unique_limit : SeqLimit u l → SeqLimit u l' → l = l'`
 
-def extraction (φ : ℕ → ℕ) := ∀ n m, n < m → φ n < φ m
+`def extraction (φ : ℕ → ℕ) := ∀ n m, n < m → φ n < φ m`
 -/
 variable {φ : ℕ → ℕ}
 
@@ -63,10 +62,7 @@ variable {u : ℕ → ℝ} {a l : ℝ}
 /-
 In the exercise, we use `∃ n ≥ N, ...` which is the abbreviation of
 `∃ n, n ≥ N ∧ ...`.
-Lean can read this abbreviation, but displays it as the confusing:
-`∃ (n : ℕ) (H : n ≥ N)`
-One gets used to it. Alternatively, one can get rid of it using the lemma
-  exists_prop {p q : Prop} : (∃ (h : p), q) ↔ p ∧ q
+Lean can read this abbreviation, but does not it when displaying the goal.
 -/
 -- 0040
 /-- If `a` is a cluster point of `u` then there are values of
@@ -75,7 +71,7 @@ theorem near_cluster : ClusterPoint u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n
   -- sorry
   intro hyp ε ε_pos N
   rcases hyp with ⟨φ, φ_extr, hφ⟩
-  cases' hφ ε ε_pos with N' hN'
+  rcases hφ ε ε_pos with ⟨N', hN'⟩
   rcases extraction_ge φ_extr N N' with ⟨q, hq, hq'⟩
   exact ⟨φ q, hq', hN' _ hq⟩
   -- sorry
@@ -90,7 +86,7 @@ existential statements.
 theorem subseq_tendsto_of_tendsto' (h : SeqLimit u l) (hφ : Extraction φ) : SeqLimit (u ∘ φ) l := by
   -- sorry
   intro ε ε_pos
-  cases' h ε ε_pos with N hN
+  rcases h ε ε_pos with ⟨N, hN⟩
   use N
   intro n hn
   apply hN
@@ -116,13 +112,13 @@ def CauchySequence (u : ℕ → ℝ) :=
 example : (∃ l, SeqLimit u l) → CauchySequence u := by
   -- sorry
   intro hyp
-  cases' hyp with l hl
+  rcases hyp with ⟨l, hl⟩
   intro ε ε_pos
-  cases' hl (ε / 2) (by linarith) with N hN
+  rcases hl (ε / 2) (by linarith) with ⟨N, hN⟩
   use N
   intro p q hp hq
   calc
-    |u p - u q| = |u p - l + (l - u q)| := by ring_nf
+    |u p - u q| = |u p - l + (l - u q)| := by congr; ring
     _ ≤ |u p - l| + |l - u q| := by apply abs_add
     _ = |u p - l| + |u q - l| := by rw [abs_sub_comm (u q) l]
     _ ≤ ε := by linarith [hN p hp, hN q hq]
@@ -130,21 +126,21 @@ example : (∃ l, SeqLimit u l) → CauchySequence u := by
 
 /-
 In the next exercise, you can reuse
- near_cluster : cluster_point u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n - a| ≤ ε
+ `near_cluster : cluster_point u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n - a| ≤ ε`
 -/
 -- 0044
 example (hu : CauchySequence u) (hl : ClusterPoint u l) : SeqLimit u l := by
   -- sorry
   intro ε ε_pos
-  cases' hu (ε / 2) (by linarith) with N hN
+  rcases hu (ε / 2) (by linarith) with ⟨N, hN⟩
   use N
   have clef : ∃ N' ≥ N, |u N' - l| ≤ ε / 2
   apply near_cluster hl (ε / 2) (by linarith)
-  cases' clef with N' h
-  cases' h with hNN' hN'
+  rcases clef with ⟨N', h⟩
+  rcases h with ⟨hNN', hN'⟩
   intro n hn
   calc
-    |u n - l| = |u n - u N' + (u N' - l)| := by ring
+    |u n - l| = |u n - u N' + (u N' - l)| := by congr; ring
     _ ≤ |u n - u N'| + |u N' - l| := by apply abs_add
     _ ≤ ε := by linarith [hN n N' (by linarith) hNN']
   -- sorry

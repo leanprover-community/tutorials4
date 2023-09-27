@@ -184,7 +184,7 @@ logical OR operator.
 In order to make use of an assumption
   `hyp : P ∨ Q`
 we use the cases tactic:
-  `cases hyp with hP hQ`
+  rcases hyp with ⟨hP, hQ`⟩
 which creates two proof branches: one branch assuming `hP : P`,
 and one branch assuming `hQ : Q`.
 
@@ -205,7 +205,7 @@ example (a b : ℝ) : a = a * b → a = 0 ∨ b = 1 := by
       _ = 0 := by linarith
 
   rw [mul_eq_zero] at H
-  cases' H with Ha Hb
+  rcases H with ⟨Ha, Hb⟩
   · left
     exact Ha
   · right
@@ -230,4 +230,3 @@ In the next exercise, we can use:
 -- 0028
 example (f : ℝ → ℝ) (h : NonDecreasing f) (h' : ∀ x, f (f x) = x) : ∀ x, f x = x := by
   sorry
-

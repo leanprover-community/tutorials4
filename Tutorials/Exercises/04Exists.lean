@@ -28,7 +28,7 @@ complicated expression.
 -/
 example (n : ℕ) (h : ∃ k : ℕ, n = k + 1) : n > 0 := by
   -- Let's fix k₀ such that n = k₀ + 1.
-  cases' h with k₀ hk₀
+  rcases h with ⟨k₀, hk₀⟩
   -- It now suffices to prove k₀ + 1 > 0.
   rw [hk₀]
   -- and we have a lemma about this
@@ -53,7 +53,7 @@ example (h₁ : a ∣ b) (h₂ : b ∣ c) : a ∣ c := by
 A very common pattern is to have an assumption or lemma asserting
   h : ∃ x, y = ...
 and this is used through the combo:
-  cases h with x hx,
+  rcases h with ⟨x, hx,⟩
   rw hx at ...
 The tactic `rcases` allows us to do recursive `cases`, as indicated by its name,
 and also simplifies the above combo when the name hx is replaced by the special
@@ -101,4 +101,3 @@ next exercise in four lines.
 -- 0032
 example (hf : Surjective f) (hg : Surjective g) : Surjective (g ∘ f) := by
   sorry
-

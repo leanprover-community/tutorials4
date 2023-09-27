@@ -11,7 +11,7 @@ You need to complete the statement and then use the `check_me` tactic
 to check your answer. This tactic exists only for those exercises,
 it mostly calls `push_neg` and then cleans up a bit.
 
-def seq_limit (u : ℕ → ℝ) (l : ℝ) : Prop :=
+def SeqLimit (u : ℕ → ℝ) (l : ℝ) : Prop :=
 ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε
 -/
 -- In this section, u denotes a sequence of real numbers
@@ -93,9 +93,9 @@ Again we'll introduce specialized definitions for the sake of exercises, but mat
 has more general versions.
 
 
-def upper_bound (A : set ℝ) (x : ℝ) := ∀ a ∈ A, a ≤ x
+def UpperBound (A : set ℝ) (x : ℝ) := ∀ a ∈ A, a ≤ x
 
-def is_sup (A : set ℝ) (x : ℝ) := upper_bound A x ∧ ∀ y, upper_bound A y → x ≤ y
+def is_sup (A : set ℝ) (x : ℝ) := UpperBound A x ∧ ∀ y, UpperBound A y → x ≤ y
 
 
 Remark: one can easily show that a set of real numbers has at most one sup,
@@ -116,4 +116,3 @@ theorem le_of_le_add_all' {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x :
 -- 0070
 example {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∀ n, u n ≤ y) : x ≤ y := by
   sorry
-

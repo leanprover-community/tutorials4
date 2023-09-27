@@ -9,12 +9,11 @@ we want to practice using the logical operators and relations
 covered in the previous files.
 
 A sequence u is a function from ℕ to ℝ, hence Lean says
-u : ℕ → ℝ
+`u : ℕ → ℝ`
 The definition we'll be using is:
 
 -- Definition of « u tends to l »
-def seq_limit (u : ℕ → ℝ) (l : ℝ) : Prop :=
-∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε
+`def seq_limit (u : ℕ → ℝ) (l : ℝ) : Prop := ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε`
 
 Note the use of `∀ ε > 0, ...` which is an abbreviation of
 `∀ ε, ε > 0 → ... `
@@ -22,7 +21,7 @@ Note the use of `∀ ε > 0, ...` which is an abbreviation of
 In particular, a statement like `h : ∀ ε > 0, ...`
 can be specialized to a given ε₀ by
   `specialize h ε₀ hε₀`
-where hε₀ is a proof of ε₀ > 0.
+where `hε₀` is a proof of `ε₀ > 0`.
 
 Also recall that, wherever Lean expects some proof term, we can
 start a tactic mode proof using the keyword `by` (followed by curly braces
@@ -41,14 +40,15 @@ We'll take this opportunity to use two new tactics:
 
 `norm_num` will perform numerical normalization on the goal and `norm_num at h`
 will do the same in assumption `h`. This will get rid of trivial calculations on numbers,
-like replacing |l - l| by zero in the next exercise.
+like replacing `|l - l|` by zero in the next exercise.
+Its name stands for "normalize numbers".
 
-`congr'` will try to prove equalities between applications of functions by recursively
-proving the arguments are the same.
+`congr` will try to prove equalities between applications of functions by recursively
+proving the arguments are the same. Its name stands for "congruence".
 For instance, if the goal is `f x + g y = f z + g t` then congr will replace it by
 two goals: `x = z` and `y = t`.
-You can limit the recursion depth by specifying a natural number after `congr'`.
-For instance, in the above example, `congr' 1` will give new goals
+You can limit the recursion depth by specifying a natural number after `congr`.
+For instance, in the above example, `congr 1` will give new goals
 `f x = f z` and `g y = g t`, which only inspect arguments of the addition and not deeper.
 -/
 variable (u v w : ℕ → ℝ) (l l' : ℝ)
@@ -67,11 +67,11 @@ example : (∀ n, u n = l) → SeqLimit u l := by
 
 /- When dealing with absolute values, we'll use lemmas:
 
-abs_le {x y : ℝ} : |x| ≤ y ↔ -y ≤ x ∧ x ≤ y
+`abs_le {x y : ℝ} : |x| ≤ y ↔ -y ≤ x ∧ x ≤ y`
 
-abs_add (x y : ℝ) : |x + y| ≤ |x| + |y|
+`abs_add (x y : ℝ) : |x + y| ≤ |x| + |y|`
 
-abs_sub_comm (x y : ℝ) : |x - y| = |y - x|
+`abs_sub_comm (x y : ℝ) : |x - y| = |y - x|`
 
 You should probably write them down on a sheet of paper that you keep at
 hand since they are used in many exercises.
@@ -81,7 +81,7 @@ hand since they are used in many exercises.
 example (hl : l > 0) : SeqLimit u l → ∃ N, ∀ n ≥ N, u n ≥ l / 2 := by
   -- sorry
   intro h
-  cases' h (l / 2) (by linarith) with N hN
+  rcases h (l / 2) (by linarith) with ⟨N, hN⟩
   use N
   intro n hn
   specialize hN n hn
@@ -92,11 +92,11 @@ example (hl : l > 0) : SeqLimit u l → ∃ N, ∀ n ≥ N, u n ≥ l / 2 := by
 /-
 When dealing with max, you can use
 
-ge_max_iff (p q r) : r ≥ max p q  ↔ r ≥ p ∧ r ≥ q
+`ge_max_iff (p q r) : r ≥ max p q  ↔ r ≥ p ∧ r ≥ q`
 
-le_max_left p q : p ≤ max p q
+`le_max_left p q : p ≤ max p q`
 
-le_max_right p q : q ≤ max p q
+`le_max_right p q : q ≤ max p q`
 
 You should probably add them to the sheet of paper where you wrote
 the `abs` lemmas since they are used in many exercises.
@@ -106,19 +106,16 @@ Let's see an example.
 -- If u tends to l and v tends l' then u+v tends to l+l'
 example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') := by
   intro ε ε_pos
-  cases' hu (ε / 2) (by linarith) with N₁ hN₁
-  cases' hv (ε / 2) (by linarith) with N₂ hN₂
+  rcases hu (ε / 2) (by linarith) with ⟨N₁, hN₁⟩
+  rcases hv (ε / 2) (by linarith) with ⟨N₂, hN₂⟩
   use max N₁ N₂
   intro n hn
-  cases' ge_max_iff.mp hn with hn₁ hn₂
+  rcases ge_max_iff.mp hn with ⟨hn₁, hn₂⟩
   have fact₁ : |u n - l| ≤ ε / 2 := hN₁ n (by linarith)
-  -- note the use of `from`.
-  -- This is an alias for `exact`,
-  -- but reads nicer in this context
   have fact₂ : |v n - l'| ≤ ε / 2 := hN₂ n (by linarith)
   calc
     |(u + v) n - (l + l')| = |u n + v n - (l + l')| := rfl
-    _ = |u n - l + (v n - l')| := by ring_nf
+    _ = |u n - l + (v n - l')| := by congr ; ring
     _ ≤ |u n - l| + |v n - l'| := by apply abs_add
     _ ≤ ε := by linarith
 
@@ -132,8 +129,8 @@ conjunction, instead of creating two new assumptions.
 -/
 example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') := by
   intro ε ε_pos
-  cases' hu (ε / 2) (by linarith) with N₁ hN₁
-  cases' hv (ε / 2) (by linarith) with N₂ hN₂
+  rcases hu (ε / 2) (by linarith) with ⟨N₁, hN₁⟩
+  rcases hv (ε / 2) (by linarith) with ⟨N₂, hN₂⟩
   use max N₁ N₂
   intro n hn
   rw [ge_max_iff] at hn
@@ -150,8 +147,8 @@ example (hu : SeqLimit u l) (hw : SeqLimit w l) (h : ∀ n, u n ≤ v n) (h' : �
     SeqLimit v l := by
   -- sorry
   intro ε ε_pos
-  cases' hu ε ε_pos with N hN
-  cases' hw ε ε_pos with N' hN'
+  rcases hu ε ε_pos with ⟨N, hN⟩
+  rcases hw ε ε_pos with ⟨N', hN'⟩
   use max N N'
   intro n hn
   rw [ge_max_iff] at hn
@@ -177,7 +174,7 @@ example (u l) : SeqLimit u l ↔ ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| < ε 
   -- sorry
   constructor
   · intro hyp ε ε_pos
-    cases' hyp (ε / 2) (by linarith) with N hN
+    rcases hyp (ε / 2) (by linarith) with ⟨N, hN⟩
     use N
     intro n hn
     calc
@@ -185,7 +182,7 @@ example (u l) : SeqLimit u l ↔ ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| < ε 
       _ < ε := by linarith
 
   · intro hyp ε ε_pos
-    cases' hyp ε ε_pos with N hN
+    rcases hyp ε ε_pos with ⟨N, hN⟩
     use N
     intro n hn
     specialize hN n hn
@@ -194,7 +191,7 @@ example (u l) : SeqLimit u l ↔ ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| < ε 
 
 /- In the next exercise, we'll use
 
-eq_of_abs_sub_le_all (x y : ℝ) : (∀ ε > 0, |x - y| ≤ ε) → x = y
+`eq_of_abs_sub_le_all (x y : ℝ) : (∀ ε > 0, |x - y| ≤ ε) → x = y`
 -/
 -- A sequence admits at most one limit
 -- 0037
@@ -203,8 +200,8 @@ example : SeqLimit u l → SeqLimit u l' → l = l' := by
   intro hl hl'
   apply eq_of_abs_sub_le_all
   intro ε ε_pos
-  cases' hl (ε / 2) (by linarith) with N hN
-  cases' hl' (ε / 2) (by linarith) with N' hN'
+  rcases hl (ε / 2) (by linarith) with ⟨N, hN⟩
+  rcases hl' (ε / 2) (by linarith) with ⟨N', hN'⟩
   calc
     |l - l'| = |l - u (max N N') + (u (max N N') - l')| := by ring_nf
     _ ≤ |l - u (max N N')| + |u (max N N') - l'| := by apply abs_add
@@ -226,8 +223,8 @@ def IsSeqSup (M : ℝ) (u : ℕ → ℝ) :=
 example (M : ℝ) (h : IsSeqSup M u) (h' : NonDecreasingSeq u) : SeqLimit u M := by
   -- sorry
   intro ε ε_pos
-  cases' h with inf_M sup_M_ep
-  cases' sup_M_ep ε ε_pos with n₀ hn₀
+  rcases h with ⟨inf_M, sup_M_ep⟩
+  rcases sup_M_ep ε ε_pos with ⟨n₀, hn₀⟩
   use n₀
   intro n hn
   rw [abs_le]

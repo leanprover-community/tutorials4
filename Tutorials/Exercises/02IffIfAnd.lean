@@ -272,7 +272,7 @@ which is a very general assumption-decomposing tactic.
 -/
 example {a b : ℝ} : 0 ≤ a ∧ 0 ≤ b → 0 ≤ a + b := by
   intro hyp
-  cases' hyp with ha hb
+  rcases hyp with ⟨ha, hb⟩
   exact add_nonneg ha hb
 
 /-
@@ -327,7 +327,7 @@ example {a b : ℝ} (H : 0 ≤ a ∧ 0 ≤ b → 0 ≤ a + b) : 0 ≤ a → 0 �
 The anonymous contructor trick actually also works in `intros` provided we use
 its recursive version `rintros`. So we can replace
   intro h,
-  cases h with h₁ h₂
+  rcases h with ⟨h₁, h₂⟩
 by
   rintros ⟨h₁, h₂⟩,
 Now redo the previous exercise using all those compressing techniques, in exactly two lines. -/
@@ -397,5 +397,3 @@ open Nat
 -- 0022
 example (a b : ℕ) : a ∣ b ↔ gcd a b = a := by
   sorry
-
-

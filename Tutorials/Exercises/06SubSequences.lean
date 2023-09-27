@@ -21,12 +21,12 @@ le_max_right p q : q ≤ max p q
 
 and the definition:
 
-def seq_limit (u : ℕ → ℝ) (l : ℝ) : Prop :=
+def SeqLimit (u : ℕ → ℝ) (l : ℝ) : Prop :=
 ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε
 
 You can also use a property proved in the previous file:
 
-unique_limit : seq_limit u l → seq_limit u l' → l = l'
+unique_limit : SeqLimit u l → SeqLimit u l' → l = l'
 
 def extraction (φ : ℕ → ℕ) := ∀ n m, n < m → φ n < φ m
 -/
@@ -96,4 +96,3 @@ In the next exercise, you can reuse
 -- 0044
 example (hu : CauchySequence u) (hl : ClusterPoint u l) : SeqLimit u l := by
   sorry
-

@@ -1,25 +1,27 @@
 import Tutorials.TutoLib
 
 /-
-In this file, we'll learn about the ∀ quantifier, and the disjunction
-operator ∨ (logical OR).
+In this file, we'll learn about the `∀` quantifier, and the disjunction
+operator `∨` (logical OR).
 
-Let P be a predicate on a type X. This means for every mathematical
-object x with type X, we get a mathematical statement P x.
-In Lean, P x has type Prop.
+ # The universal quantifier
 
-Lean sees a proof h of `∀ x, P x` as a function sending any `x : X` to
+Let `P` be a predicate on a type `X`. This means for every mathematical
+object `x` with type `X`, we get a mathematical statement `P x`.
+In Lean, `P x` has type `Prop`.
+
+Lean sees a proof `h` of `∀ x, P x` as a function sending any `x : X` to
 a proof `h x` of `P x`.
 This already explains the main way to use an assumption or lemma which
-starts with a ∀.
+starts with a `∀`.
 
-In order to prove `∀ x, P x`, we use `intros x` to fix an arbitrary object
-with type X, and call it x.
+In order to prove `∀ x, P x`, we use `intro x` to fix an arbitrary object
+with type `X`, and call it `x`.
 
-Note also we don't need to give the type of x in the expression `∀ x, P x`
-as long as the type of P is clear to Lean, which can then infer the type of x.
+Note also we don't need to give the type of `x` in the expression `∀ x, P x`
+as long as the type of `P` is clear to Lean, which can then infer the type of `x`.
 
-Let's consider two predicates to play with ∀.
+Let's consider two predicates to play with `∀`.
 
 `EvenFun (f : ℝ → ℝ) : ∀ x, f (-x) = f x`
 
@@ -107,7 +109,8 @@ example (f g : ℝ → ℝ) : OddFun f → OddFun g → OddFun (g ∘ f) := by
   intro hf hg x
   calc
     (g ∘ f) (-x) = g (f (-x)) := rfl
-    _ = -(g ∘ f) x := by rw [hf, hg, Function.comp]
+    _ = -g (f x) := by rw [hf, hg]
+    _ = -(g ∘ f) x := rfl
   -- sorry
 
 /-
@@ -162,7 +165,7 @@ Since the above proof uses only `intros` and `exact`, we could very easily repla
 raw proof term:
 -/
 example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonDecreasing g) : NonDecreasing (g ∘ f) :=
-  fun x₁ x₂ h => hg (f x₁) (f x₂) (hf x₁ x₂ h)
+  fun x₁ x₂ h ↦ hg (f x₁) (f x₂) (hf x₁ x₂ h)
 
 /-
 Of course the above proof is difficult to decipher. The principle in mathlib is to use
@@ -191,14 +194,15 @@ example (f g : ℝ → ℝ) (hf : NonDecreasing f) (hg : NonIncreasing g) : NonI
   exact hf x₁ x₂ h
   -- sorry
 
-/-
-Let's switch to disjunctions now. Lean denotes by ∨ the
+/- # Disjunctions
+
+Let's switch to disjunctions now. Lean denotes by `∨` the
 logical OR operator.
 
 In order to make use of an assumption
   `hyp : P ∨ Q`
 we use the cases tactic:
-  `cases hyp with hP hQ`
+  `rcases hyp with hP | hQ`
 which creates two proof branches: one branch assuming `hP : P`,
 and one branch assuming `hQ : Q`.
 
@@ -219,7 +223,7 @@ example (a b : ℝ) : a = a * b → a = 0 ∨ b = 1 := by
       _ = 0 := by linarith
 
   rw [mul_eq_zero] at H
-  cases' H with Ha Hb
+  rcases H with Ha | Hb
   · left
     exact Ha
   · right
@@ -236,7 +240,7 @@ example (x y : ℝ) : x ^ 2 = y ^ 2 → x = y ∨ x = -y := by
     _ = 0 := by ring
 
   rw [mul_eq_zero] at H
-  cases' H with h1 h2
+  rcases H with h1 | h2
   · left
     linarith
   · right
@@ -256,7 +260,7 @@ example (f : ℝ → ℝ) : NonDecreasing f ↔ ∀ x y, x < y → f x ≤ f y :
     linarith
   · intro hf x y hxy
     have clef : x = y ∨ x < y := eq_or_lt_of_le hxy
-    cases' clef with hxy hxy
+    rcases clef with hxy | hxy
     · rw [hxy]
     · exact hf x y hxy
   -- sorry
@@ -271,7 +275,7 @@ example (f : ℝ → ℝ) (h : NonDecreasing f) (h' : ∀ x, f (f x) = x) : ∀ 
   intro x
   have : f (f x) = x := by rw [h']
   have : f x ≤ x ∨ x ≤ f x := le_total (f x) x
-  cases' this with hx hx
+  rcases this with hx | hx
   · have f1 : f (f x) ≤ f x := h (f x) x hx
     rw [h'] at f1
     linarith

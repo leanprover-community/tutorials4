@@ -59,8 +59,8 @@ everything left of the final `:` is introducing the objects and assumption. The 
 theorem unique_max (A : Set ℝ) (x y : ℝ) (hx : x is_a_max_of A) (hy : y is_a_max_of A) : x = y := by
   -- We first break our assumptions in their two constituent pieces.
   -- We are free to choose the name following `with`
-  cases' hx with x_in x_up
-  cases' hy with y_in y_up
+  rcases hx with ⟨x_in, x_up⟩
+  rcases hy with ⟨y_in, y_up⟩
   -- Assumption `x_up` means x isn't less than elements of A, let's apply this to y
   specialize x_up y
   -- Assumption `x_up` now needs the information that `y` is indeed in `A`.
@@ -264,7 +264,7 @@ theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : Limit u x) (ineq : ∀ n, y �
   intro ε ε_pos
   -- we now specialize our limit assumption to this `ε`, and immediately
   -- fix a `N` as promised by the definition.
-  cases' hu ε ε_pos with N HN
+  rcases hu ε ε_pos with ⟨N, HN⟩
   -- Now we only need to compute until reaching the conclusion
   calc
     y ≤ u N := ineq N
@@ -326,7 +326,7 @@ theorem limit_inv_succ : ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, 1 / (n + 1 : ℝ)
     by
     -- Because we didn't provide a name for the above statement, Lean called it `this`.
     -- Let's fix an `N` that works.
-    cases' this with N HN
+    rcases this with ⟨N, HN⟩
     use N
     intro n Hn
     -- Now we want to rewrite the goal using lemmas
@@ -379,7 +379,7 @@ theorem inf_seq (A : Set ℝ) (x : ℝ) :
     constructor
     · intro ε ε_pos
       -- again we use a lemma we proved, specializing it to our fixed `ε`, and fixing a `N`
-      cases' limit_inv_succ ε ε_pos with N H
+      rcases limit_inv_succ ε ε_pos with ⟨N, H⟩
       use N
       intro n hn
       have : x ≤ u n := h.1 _ (hu n).1
@@ -401,4 +401,3 @@ theorem inf_seq (A : Set ℝ) (x : ℝ) :
     apply le_lim lim
     intro n
     exact y_mino (u n) (huA n)
-

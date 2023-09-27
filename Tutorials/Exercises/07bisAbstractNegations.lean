@@ -10,7 +10,7 @@ negations.
 
 Here we don't use `contrapose` or `push_neg`. The goal is to prove lemmas
 that are used by those tactics. Of course we can use
-`exfalso`, `by_contradiction` and `by_cases`.
+`exfalso`, `by_contra` and `by_cases`.
 
 If this doesn't sound like fun then skip ahead to the next file.
 -/
@@ -55,4 +55,3 @@ example (P : ℝ → Prop) : (¬∀ x > 0, P x) ↔ ∃ x > 0, ¬P x := by
   sorry
 
 end NegationQuantifiers
-

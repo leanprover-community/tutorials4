@@ -36,17 +36,17 @@ and a couple of extras.
 
 From the 5th file:
 
-  limit_const (x : ℝ) : seq_limit (λ n, x) x
+  limit_const (x : ℝ) : SeqLimit (λ n, x) x
 
 
-  squeeze (lim_u : seq_limit u l) (lim_w : seq_limit w l)
+  squeeze (lim_u : SeqLimit u l) (lim_w : seq_limit w l)
     (hu : ∀ n, u n ≤ v n) (hw : ∀ n, v n ≤ w n)  : seq_limit v l
 
 From the 8th:
 
-  def upper_bound (A : set ℝ) (x : ℝ) := ∀ a ∈ A, a ≤ x
+  def UpperBound (A : set ℝ) (x : ℝ) := ∀ a ∈ A, a ≤ x
 
-  def is_sup (A : set ℝ) (x : ℝ) := upper_bound A x ∧ ∀ y, upper_bound A y → x ≤ y
+  def is_sup (A : set ℝ) (x : ℝ) := UpperBound A x ∧ ∀ y, UpperBound A y → x ≤ y
 
   lt_sup (hx : is_sup A x) : ∀ y, y < x → ∃ a ∈ A, y < a :=
 
@@ -247,4 +247,3 @@ example (f : ℝ → ℝ) (hf : ∀ x, ContinuousAtPt f x) (h₀ : f 0 < 0) (h�
     dsimp at not_in
   sorry
   linarith
-

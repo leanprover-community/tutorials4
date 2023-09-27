@@ -4,7 +4,7 @@ import Tutorials.TutoLib
 Negations, proof by contradiction and contraposition.
 
 This file introduces the logical rules and tactics related to negation:
-exfalso, by_contradiction, contrapose, by_cases and push_neg.
+exfalso, by_contra, contrapose, by_cases and push_neg.
 
 There is a special statement denoted by `False` which, by definition,
 has no proof.
@@ -32,11 +32,9 @@ use the definition of `¬ P`.
 example {x : ℝ} : ¬x < x := by
   intro hyp
   rw [lt_iff_le_and_ne] at hyp
-  cases' hyp with hyp_inf hyp_non
-  clear hyp_inf
-  -- we won't use that one, so let's discard it
-  change x = x → False at hyp_non
-  -- Lean doesn't need this psychological line
+  rcases hyp with ⟨hyp_inf, hyp_non⟩
+  clear hyp_inf -- we won't use that one, so let's discard it
+  change x = x → False at hyp_non -- Lean doesn't need this psychological line
   apply hyp_non
   rfl
 
@@ -54,7 +52,7 @@ example (P Q : Prop) (h₁ : P ∨ Q) (h₂ : ¬(P ∧ Q)) : ¬P ↔ Q := by
   -- sorry
   constructor
   · intro hnP
-    cases' h₁ with hP hQ
+    rcases h₁ with hP | hQ
     · exfalso
       exact hnP hP
     · exact hQ
@@ -64,44 +62,41 @@ example (P Q : Prop) (h₁ : P ∨ Q) (h₂ : ¬(P ∧ Q)) : ¬P ↔ Q := by
 
 /-
 The definition of negation easily implies that, for every statement P,
-P → ¬ ¬ P
+`P → ¬ ¬ P`.
 
-The excluded middle axiom, which asserts P ∨ ¬ P allows us to
+The excluded middle axiom, which asserts `P ∨ ¬ P` allows us to
 prove the converse implication.
 
 Together those two implications form the principle of double negation elimination.
-  not_not {P : Prop} : (¬ ¬ P) ↔ P
+  `not_not {P : Prop} : (¬ ¬ P) ↔ P`
 
 The implication `¬ ¬ P → P` is the basis for proofs by contradiction:
-in order to prove P, it suffices to prove ¬¬ P, ie `¬ P → False`.
+in order to prove `P`, it suffices to prove `¬ ¬ P`, ie `¬ P → False`.
 
 Of course there is no need to keep explaining all this. The tactic
-`by_contradiction Hyp` will transform any goal P into `False` and
-add Hyp : ¬ P to the local context.
+`by_contra Hyp` will transform any goal `P` into `False` and
+add `Hyp : ¬ P` to the local context.
 
 Let's return to a proof from the 5th file: uniqueness of limits for a sequence.
 This cannot be proved without using some version of the excluded middle
 axiom. We used it secretely in
 
-eq_of_abs_sub_le_all (x y : ℝ) : (∀ ε > 0, |x - y| ≤ ε) → x = y
+`eq_of_abs_sub_le_all (x y : ℝ) : (∀ ε > 0, |x - y| ≤ ε) → x = y`
 
 (we'll prove a variation on this lemma below).
 
 In the proof below, we also take the opportunity to introduce the `let` tactic
-which creates a local definition. If needed, it can be unfolded using `dsimp` which
-takes a list of definitions to unfold. For instance after using `let N₀ := max N N'`,
-you could write `dsimp [N₀] at h` to replace `N₀` by its definition in some
-local assumption `h`.
+which creates a local definition. If needed, it can be unfolded using `unfold_let`.
+For instance after using `let N₀ := max N N'`, you could write
+`unfold_let N₀ at h` to replace `N₀` by its definition in some local assumption `h`.
 -/
 example (u : ℕ → ℝ) (l l' : ℝ) : SeqLimit u l → SeqLimit u l' → l = l' := by
   intro hl hl'
   by_contra H
-  change l ≠ l' at H
-  -- Lean does not need this line
-  have ineg : |l - l'| > 0 := abs_pos.mpr (sub_ne_zero_of_ne H)
-  -- details about that line are not important
-  cases' hl (|l - l'| / 4) (by linarith) with N hN
-  cases' hl' (|l - l'| / 4) (by linarith) with N' hN'
+  change l ≠ l' at H -- Lean does not need this line, but it makes H easier to read
+  have ineg : |l - l'| > 0 := abs_pos.mpr (sub_ne_zero_of_ne H) -- details about that line are not important
+  rcases hl (|l - l'| / 4) (by linarith) with ⟨N, hN⟩
+  rcases hl' (|l - l'| / 4) (by linarith) with ⟨N', hN'⟩
   let N₀ := max N N'
   specialize hN N₀ (le_max_left _ _)
   specialize hN' N₀ (le_max_right _ _)
@@ -112,14 +107,14 @@ example (u : ℕ → ℝ) (l l' : ℝ) : SeqLimit u l → SeqLimit u l' → l = 
     _ = |u N₀ - l| + |u N₀ - l'| := by rw [abs_sub_comm]
     _ < |l - l'| := by linarith
 
-  linarith
+  linarith -- linarith can also find simple numerical contradictions
 
--- linarith can also find simple numerical contradictions
 /-
 Another incarnation of the excluded middle axiom is the principle of
 contraposition: in order to prove P ⇒ Q, it suffices to prove
-non Q ⇒ non P.
+not Q ⇒ not P.
 -/
+
 -- Using a proof by contradiction, let's prove the contraposition principle
 -- 0047
 example (P Q : Prop) (h : ¬Q → ¬P) : P → Q := by
@@ -147,8 +142,7 @@ example (n : ℤ) : Even (n ^ 2) ↔ Even n := by
   -- sorry
   constructor
   · contrapose
-    rw [← Int.odd_iff_not_even]
-    rw [← Int.odd_iff_not_even]
+    rw [← Int.odd_iff_not_even, ← Int.odd_iff_not_even]
     rintro ⟨k, rfl⟩
     use 2 * k * (k + 1)
     ring
@@ -161,14 +155,14 @@ example (n : ℤ) : Even (n ^ 2) ↔ Even n := by
 As a last step on our law of the excluded middle tour, let's notice that, especially
 in pure logic exercises, it can sometimes be useful to use the
 excluded middle axiom in its original form:
-  Classical.em : ∀ P, P ∨ ¬ P
+  `Classical.em : ∀ P, P ∨ ¬ P`
 
-Instead of applying this lemma and then using the `cases` tactic, we
+Instead of applying this lemma and then using the `rcases` tactic, we
 have the shortcut
- by_cases h : P,
+ `by_cases h : P`
 
 combining both steps to create two proof branches: one assuming
-h : P, and the other assuming h : ¬ P
+`h : P`, and the other assuming `h : ¬ P`.
 
 For instance, let's prove a reformulation of this implication relation,
 which is sometimes used as a definition in other logical foundations,
@@ -186,7 +180,7 @@ example : P → Q ↔ ¬P ∨ Q := by
     · left
       exact hP
   · intro h hP
-    cases' h with hnP hQ
+    rcases h with hnP | hQ
     · exfalso
       exact hnP hP
     · exact hQ
@@ -203,7 +197,7 @@ example : ¬(P ∧ Q) ↔ ¬P ∨ ¬Q := by
     · left
       exact hP
   · rintro h ⟨hP, hQ⟩
-    cases' h with hnP hnQ
+    rcases h with hnP | hnQ
     · exact hnP hP
     · exact hnQ hQ
   -- sorry
@@ -228,9 +222,9 @@ Contrary to negation of the existential quantifier, negation of the
 universal quantifier requires excluded middle for the first implication.
 In order to prove this, we can use either
 * a double proof by contradiction
-* a contraposition, not_not : (¬ ¬ P) ↔ P) and a proof by contradiction.
+* a contraposition, `not_not : (¬ ¬ P) ↔ P` and a proof by contradiction.
 
-Recall we have 
+Recall we have
 `EvenFun (f : ℝ → ℝ) := ∀ x, f (-x) = f x`
 
 -/
@@ -241,20 +235,20 @@ example (f : ℝ → ℝ) : ¬EvenFun f ↔ ∃ x, f (-x) ≠ f x := by
   constructor
   · contrapose
     intro h
-    rw [Classical.not_not]
+    rw [not_not]
     intro x
     by_contra H
     apply h
     use x
   /- Alternative version
-      intro h,
-      by_contradiction H,
-      apply h,
-      intro x,
-      by_contradiction H',
-      apply H,
-      use x, -/
-  · rintro ⟨x, hx⟩ h'
+      intro h
+      by_contra H
+      apply h
+      intro x
+      by_contra H'
+      apply H
+      use x -/
+  · intro ⟨x, hx⟩ h'
     exact hx (h' x)
   -- sorry
 
@@ -303,7 +297,7 @@ The "contrapose, push_neg" combo is so common that we can abreviate it to
 `contrapose!`
 
 Let's use this trick, together with:
-  eq_or_lt_of_le : a ≤ b → a = b ∨ a < b
+  `eq_or_lt_of_le : a ≤ b → a = b ∨ a < b`
 -/
 -- 0054
 example (f : ℝ → ℝ) : (∀ x y, x < y → f x < f y) ↔ ∀ x y, x ≤ y ↔ f x ≤ f y := by
@@ -312,7 +306,7 @@ example (f : ℝ → ℝ) : (∀ x y, x < y → f x < f y) ↔ ∀ x y, x ≤ y 
   · intro hf x y
     constructor
     · intro hxy
-      cases' eq_or_lt_of_le hxy with hxy hxy
+      rcases eq_or_lt_of_le hxy with hxy | hxy
       · rw [hxy]
       · linarith [hf x y hxy]
     · contrapose!

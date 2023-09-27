@@ -13,7 +13,7 @@ u : ℕ → ℝ
 The definition we'll be using is:
 
 -- Definition of « u tends to l »
-def seq_limit (u : ℕ → ℝ) (l : ℝ) : Prop :=
+def SeqLimit (u : ℕ → ℝ) (l : ℝ) : Prop :=
 ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε
 
 Note the use of `∀ ε > 0, ...` which is an abbreviation of
@@ -91,11 +91,11 @@ Let's see an example.
 -- If u tends to l and v tends l' then u+v tends to l+l'
 example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') := by
   intro ε ε_pos
-  cases' hu (ε / 2) (by linarith) with N₁ hN₁
-  cases' hv (ε / 2) (by linarith) with N₂ hN₂
+  rcases hu (ε / 2) (by linarith) with ⟨N₁, hN₁⟩
+  rcases hv (ε / 2) (by linarith) with ⟨N₂, hN₂⟩
   use max N₁ N₂
   intro n hn
-  cases' ge_max_iff.mp hn with hn₁ hn₂
+  rcases ge_max_iff.mp hn with ⟨hn₁, hn₂⟩
   have fact₁ : |u n - l| ≤ ε / 2 := hN₁ n (by linarith)
   -- note the use of `from`.
   -- This is an alias for `exact`,
@@ -117,8 +117,8 @@ conjunction, instead of creating two new assumptions.
 -/
 example (hu : SeqLimit u l) (hv : SeqLimit v l') : SeqLimit (u + v) (l + l') := by
   intro ε ε_pos
-  cases' hu (ε / 2) (by linarith) with N₁ hN₁
-  cases' hv (ε / 2) (by linarith) with N₂ hN₂
+  rcases hu (ε / 2) (by linarith) with ⟨N₁, hN₁⟩
+  rcases hv (ε / 2) (by linarith) with ⟨N₂, hN₂⟩
   use max N₁ N₂
   intro n hn
   rw [ge_max_iff] at hn
@@ -162,4 +162,3 @@ def IsSeqSup (M : ℝ) (u : ℕ → ℝ) :=
 -- 0038
 example (M : ℝ) (h : IsSeqSup M u) (h' : NonDecreasingSeq u) : SeqLimit u M := by
   sorry
-

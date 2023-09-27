@@ -4,7 +4,7 @@ import Tutorials.TutoLib
 Negations, proof by contradiction and contraposition.
 
 This file introduces the logical rules and tactics related to negation:
-exfalso, by_contradiction, contrapose, by_cases and push_neg.
+exfalso, by_contra, contrapose, by_cases and push_neg.
 
 There is a special statement denoted by `False` which, by definition,
 has no proof.
@@ -32,7 +32,7 @@ use the definition of `¬ P`.
 example {x : ℝ} : ¬x < x := by
   intro hyp
   rw [lt_iff_le_and_ne] at hyp
-  cases' hyp with hyp_inf hyp_non
+  rcases hyp with ⟨hyp_inf, hyp_non⟩
   clear hyp_inf
   -- we won't use that one, so let's discard it
   change x = x → False at hyp_non
@@ -64,7 +64,7 @@ The implication `¬ ¬ P → P` is the basis for proofs by contradiction:
 in order to prove P, it suffices to prove ¬¬ P, ie `¬ P → False`.
 
 Of course there is no need to keep explaining all this. The tactic
-`by_contradiction Hyp` will transform any goal P into `False` and
+`by_contra Hyp` will transform any goal P into `False` and
 add Hyp : ¬ P to the local context.
 
 Let's return to a proof from the 5th file: uniqueness of limits for a sequence.
@@ -88,8 +88,8 @@ example (u : ℕ → ℝ) (l l' : ℝ) : SeqLimit u l → SeqLimit u l' → l = 
   -- Lean does not need this line
   have ineg : |l - l'| > 0 := abs_pos.mpr (sub_ne_zero_of_ne H)
   -- details about that line are not important
-  cases' hl (|l - l'| / 4) (by linarith) with N hN
-  cases' hl' (|l - l'| / 4) (by linarith) with N' hN'
+  rcases hl (|l - l'| / 4) (by linarith) with ⟨N, hN⟩
+  rcases hl' (|l - l'| / 4) (by linarith) with ⟨N', hN'⟩
   let N₀ := max N N'
   specialize hN N₀ (le_max_left _ _)
   specialize hN' N₀ (le_max_right _ _)
@@ -159,7 +159,7 @@ example : P → Q ↔ ¬P ∨ Q := by
     · left
       exact hP
   · intro h hP
-    cases' h with hnP hQ
+    rcases h with ⟨hnP, hQ⟩
     · exfalso
       exact hnP hP
     · exact hQ
@@ -184,7 +184,7 @@ In order to prove this, we can use either
 * a double proof by contradiction
 * a contraposition, not_not : (¬ ¬ P) ↔ P) and a proof by contradiction.
 
-Recall we have 
+Recall we have
 `EvenFun (f : ℝ → ℝ) := ∀ x, f (-x) = f x`
 
 -/
@@ -233,4 +233,3 @@ Let's use this trick, together with:
 -- 0054
 example (f : ℝ → ℝ) : (∀ x y, x < y → f x < f y) ↔ ∀ x y, x ≤ y ↔ f x ≤ f y := by
   sorry
-
