@@ -12,11 +12,11 @@ In the following exercises, we will use the following two lemmas:
   `mul_comm a b : a*b = b*a`
 
 Hence the command
-  `rw mul_assoc a b c`,
+  `rw [mul_assoc a b c]`,
 will replace `a*b*c` by `a*(b*c)` in the current goal.
 
 In order to replace backward, we use
-  `rw ← mul_assoc a b c`,
+  `rw [← mul_assoc a b c]`,
 replacing `a*(b*c)` by `a*b*c` in the current goal.
 
 Of course we don't want to constantly invoke those lemmas, and we will eventually introduce
@@ -39,7 +39,7 @@ example (a b c : ℝ) : a * (b * c) = b * (a * c) := by
 Now let's return to the preceding example to experiment with what happens
 if we don't give arguments to mul_assoc or mul_comm.
 For instance, you can start the next proof with
-  `rw ← mul_assoc`,
+  `rw [← mul_assoc]`,
 Try to figure out what happens.
 -/
 -- 0003
@@ -48,11 +48,11 @@ example (a b c : ℝ) : a * (b * c) = b * (a * c) := by
 
 /-
 We can also perform rewriting in an assumption of the local context, using for instance
-  rw mul_comm a b at hyp,
+  `rw [mul_comm a b] at hyp`,
 in order to replace a*b by b*a in assumption hyp.
 
 The next example will use a third lemma:
-  two_mul a : 2*a = a + a
+  `two_mul a : 2*a = a + a`
 
 Also we use the `exact` tactic, which allows to provide a direct proof term.
 -/
@@ -66,7 +66,7 @@ example (a b c d : ℝ) (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d
 -- Our assumption hyp is now exactly what we have to prove
 /-
 And the next one can use:
-  sub_self x : x - x = 0
+  `sub_self x : x - x = 0`
 -/
 -- 0004
 example (a b c d : ℝ) (hyp : c = b * a - d) (hyp' : d = a * b) : c = 0 := by
@@ -87,13 +87,10 @@ example (a b c d : ℝ) (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d
 
 
 /-
-Let's note there is no comma at the end of each line of calculation. `calc` is really one
-command, and the comma comes only after it's fully done.
-
 From a practical point of view, when writing such a proof, it is convenient to:
 * pause the tactic state view update in VScode by clicking the Pause icon button
   in the top right corner of the Lean Goal buffer
-* write the full calculation, ending each line with ": by {}"
+* write the full calculation, ending each line with ":= by {}"
 * resume tactic state update by clicking the Play icon button and fill in proofs between
   curly braces.
 
@@ -108,9 +105,6 @@ The preceding proofs have exhausted our supply of "mul_comm" patience. Now it's 
 to get the computer to work harder. The `ring` tactic will prove any goal that follows by
 applying only the axioms of commutative (semi-)rings, in particular commutativity and
 associativity of addition and multiplication, as well as distributivity.
-
-We also note that curly braces are not necessary when we write a single tactic proof, so
-let's get rid of them.
 -/
 example (a b c d : ℝ) (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d := by
   calc
@@ -136,12 +130,12 @@ example (a b : ℝ) : a + b + a = 2 * a + b := by
 /-
 Maybe this is cheating. Let's try to do the next computation without ring.
 We could use:
-pow_two x : x^2 = x*x
-mul_sub a b c : a*(b-c) = a*b - a*c
-add_mul a b c : (a+b)*c = a*c + b*c
-add_sub a b c : a + (b - c) = (a + b) - c
-sub_sub a b c : a - b - c = a - (b + c)
-add_zero a : a + 0 = a
+`pow_two x : x^2 = x*x`
+`mul_sub a b c : a*(b-c) = a*b - a*c`
+`add_mul a b c : (a+b)*c = a*c + b*c`
+`add_sub a b c : a + (b - c) = (a + b) - c`
+`sub_sub a b c : a - b - c = a - (b + c)`
+`add_zero a : a + 0 = a`
 -/
 -- 0008
 example (a b : ℝ) : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by

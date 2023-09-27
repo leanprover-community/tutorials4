@@ -2,20 +2,16 @@
 This file is intended for Lean beginners. The goal is to demonstrate what it feels like to prove
 things using Lean and mathlib. Complicated definitions and theory building are not covered.
 Everything is covered again more slowly and with exercises in the next files.
-
-! This file was ported from Lean 3 source module main
 -/
+-- We want real numbers and their basic properties
 import Mathlib.Data.Real.Basic
+-- We want to be able to use Lean's built-in "help" functionality
 import Mathlib.Tactic.LibrarySearch
 
--- We want real numbers and their basic properties
--- We want to be able to use Lean's built-in "help" functionality
--- We want to be able to use Lean's built-in "help" functionality
--- We want to be able to define functions using the law of excluded middle
+
 -- We want to be able to define functions using the law of excluded middle
 noncomputable section
 
-open Classical
 
 /-
 Our first goal is to define the set of upper bounds of a set of real numbers.
@@ -115,10 +111,10 @@ example (A : Set ℝ) (x y : ℝ) (hx : x is_a_max_of A) (hy : y is_a_max_of A) 
 /-
 Such a proof is called a proof term (or a "term mode" proof). Notice it has no `by`.
 It is directly the kind of low level proof that the Lean kernel is
-consuming. Commands like `cases`, `specialize` or `linarith` are called tactics, they
+consuming. Commands like `rcases`, `specialize` or `linarith` are called tactics, they
 help users constructing proof terms that could be very tedious to write directly.
 The most efficient proof style combines tactics with proof terms like our previous
-`have : x ≤ y, from hy.2 x hx.1` where `hy.2 x hx.1` is a proof term embeded inside
+`have : x ≤ y := hy.2 x hx.1` where `hy.2 x hx.1` is a proof term embeded inside
 a tactic mode proof.
 
 In the remaining of this file, we'll be characterizing infima of sets of real numbers
@@ -135,7 +131,7 @@ in mathlib.
 def IsInf (x : ℝ) (A : Set ℝ) :=
   x is_a_max_of lowBounds A
 
--- mathport name: «expr is_an_inf_of »
+-- Let's define it also as an infix operator
 infixl:55 " is_an_inf_of " => IsInf
 
 /-
@@ -182,7 +178,7 @@ theorem le_of_le_add_eps {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x :=
 /-
 Note how `linarith` was used for both sub-goals at the end of the above proof.
 We could have shortened that using the semi-colon combinator instead of comma,
-writing `split ; linarith`.
+writing `constructor <;> linarith`.
 
 Next we will study a compressed version of that proof:
 -/
@@ -199,18 +195,11 @@ itself compound, it is a conjunction `P z ∧ Q z`. So the proof term should rea
 But these so-called "anonymous constructor" brackets are right-associative, so we can
 get rid of the nested brackets.
 
-The keyword `by` introduces tactic mode inside term mode, it is a shorter version
-of the `begin`/`end` pair, which is more convenient for single tactic blocks.
-In this example, `begin` enters tactic mode, `exact` leaves it, `by` re-enters it.
+Note also how we can use `by` to enter tactics anywhere a term is expected.
 
 Going all the way to a proof term would make the proof much longer, because we
-crucially use automation with `contrapose!` and `linarith`. We can still get a one-line
-proof using curly braces to gather several tactic invocations, and the `by` abbreviation
-instead of `begin`/`end`:
+crucially use automation with `contrapose!` and `linarith`.
 -/
-example {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x := by
-  contrapose!
-  exact fun h => ⟨(y - x) / 2, by linarith, by linarith⟩
 
 /-
 One could argue that the above proof is a bit too terse, and we are relying too much
@@ -251,8 +240,8 @@ def Limit (u : ℕ → ℝ) (l : ℝ) :=
 
 /-
 In the above definition, `u n` denotes the n-th term of the sequence. We can
-add parentheses to get `u(n)` but we try to avoid parentheses because they pile up
-very quickly
+add parentheses to get `u (n)` but we try to avoid parentheses because they pile up
+very quickly (and note the space between `u` and `(` is required).
 -/
 
 -- If y ≤ u n for all n and u n goes to x then y ≤ x
@@ -269,15 +258,15 @@ theorem le_lim {x y : ℝ} {u : ℕ → ℝ} (hu : Limit u x) (ineq : ∀ n, y �
   calc
     y ≤ u N := ineq N
     _ = x + (u N - x) := by linarith
-    -- We'll need `add_le_add` which says `a ≤ b` and `c ≤ d` implies `a + c ≤ b + d`
-    -- We need a lemma saying `z ≤ |z|`. Because we don't know the name of this lemma,
-    -- let's use `exact?`. Because searching through the library is slow,
+    -- In the next step we use the `gcongr` tactic which uses "generalized congruence" lemmas
+    -- to zoom on the relevant part of the inequality goal, in this case `u N - x ≤ |u N - x|`.
+    -- We then need a lemma saying `z ≤ |z|`. Because we don't know the name of this lemma,
+    -- let's use `exact?`. Because searching through the library can be slow,
     -- Lean will write what it found in the Lean message window when cursor is on
     -- that line, so that we can replace it by the lemma. We see `le_abs_self`, which
     -- says `a ≤ |a|`, exactly what we're looking for.
-    _ ≤ x + |u N - x| :=
-      (add_le_add (by linarith) (by exact?))
-    _ ≤ x + ε := add_le_add (by linarith) (HN N (by linarith))
+    _ ≤ x + |u N - x| :=  by gcongr ; exact?
+    _ ≤ x + ε := by gcongr ; apply HN; linarith
 
 /-
 The next lemma has been extracted from the main proof in order to discuss numbers.
@@ -310,20 +299,19 @@ stupid, so let's find a way to write it on one line in case we want to include i
 in some other proof without stating a lemma. First the `exact?` call
 above displays the name of the relevant lemma: `one_div_pos`. We can also
 replace the `linarith` call on the last line by `exact?` to learn the name
-of the lemma `nat.succ_pos` asserting that the successor of a natural number is
+of the lemma `Nat.succ_pos` asserting that the successor of a natural number is
 positive. There is also a variant on `norm_cast` that combines it with `exact`.
-The term mode analogue of `intro` is `λ`. We get down to:
+The term mode analogue of `intro` is `fun`. We get down to:
 -/
-example : ∀ n : ℕ, 1 / (n + 1 : ℝ) > 0 := fun n =>
-  one_div_pos.mpr (by exact_mod_cast Nat.succ_pos n)
+example : ∀ n : ℕ, 1 / (n + 1 : ℝ) > 0 :=
+  fun n ↦ one_div_pos.mpr (by exact_mod_cast Nat.succ_pos n)
 
 /-
 The next proof uses mostly known things, so we will commment only new aspects.
 -/
 theorem limit_inv_succ : ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, 1 / (n + 1 : ℝ) ≤ ε := by
   intro ε ε_pos
-  suffices ∃ N : ℕ, 1 / ε ≤ N
-    by
+  suffices ∃ N : ℕ, 1 / ε ≤ N by
     -- Because we didn't provide a name for the above statement, Lean called it `this`.
     -- Let's fix an `N` that works.
     rcases this with ⟨N, HN⟩
@@ -341,16 +329,17 @@ theorem limit_inv_succ : ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, 1 / (n + 1 : ℝ)
     replace Hn : (N : ℝ) ≤ n
     exact_mod_cast Hn
     linarith
-    -- we are still left with the positivity assumption, but already discussed
-    -- how to prove it in the preceding lemma
-    exact_mod_cast Nat.succ_pos n
+    -- we are still left with the positivity assumption. We already discussed
+    -- how to prove it in the preceding lemma, but we could alternatively use
+    -- the `positivity` tactic whose job is to prove obvious positivity statements.
+    positivity
   -- Now we need to prove that sufficient statement.
   -- We want to use that `ℝ` is archimedean. So we start typing
   -- `exact archimedean_` and hit Ctrl-space to see what completion Lean proposes
   -- the lemma `archimedean_iff_nat_le` sounds promising. We select the left to
   -- right implication using `.1`. This a generic lemma for fields equiped with
   -- a linear (ie total) order. We need to provide a proof that `ℝ` is indeed
-  -- archimedean. This is done using the `apply_instance` tactic that will be
+  -- archimedean. This is done using the `infer_instance` tactic that will be
   -- covered elsewhere.
   exact archimedean_iff_nat_le.1 (by infer_instance) (1 / ε)
 
@@ -365,8 +354,7 @@ theorem inf_seq (A : Set ℝ) (x : ℝ) :
     · exact h.1
     -- On the next line, we don't need to tell Lean to treat `n+1` as a real number because
     -- we add `x` to it, so Lean knows there is only one way to make sense of this expression.
-    have key : ∀ n : ℕ, ∃ a ∈ A, a < x + 1 / (n + 1) :=
-      by
+    have key : ∀ n : ℕ, ∃ a ∈ A, a < x + 1 / (n + 1) := by
       intro n
       -- we can use the lemma we proved above
       apply inf_lt h
@@ -392,8 +380,8 @@ theorem inf_seq (A : Set ℝ) (x : ℝ) :
     · intro n
       exact (hu n).1
   · intro h
-    -- Assumption `h` is made of nested compound statements. We can use the
-    -- recursive version of `cases` to unpack it in one go.
+    -- Assumption `h` is made of nested compound statements. We can use
+    -- `rcases` to unpack it in one go.
     rcases h with ⟨x_min, u, lim, huA⟩
     constructor
     exact x_min
@@ -401,3 +389,4 @@ theorem inf_seq (A : Set ℝ) (x : ℝ) :
     apply le_lim lim
     intro n
     exact y_mino (u n) (huA n)
+

@@ -7,28 +7,27 @@ any new tactic or trick.
 
 Remember useful lemmas:
 
-abs_le {x y : ℝ} : |x| ≤ y ↔ -y ≤ x ∧ x ≤ y
+`abs_le {x y : ℝ} : |x| ≤ y ↔ -y ≤ x ∧ x ≤ y`
 
-abs_add (x y : ℝ) : |x + y| ≤ |x| + |y|
+`abs_add (x y : ℝ) : |x + y| ≤ |x| + |y|`
 
-abs_sub_comm (x y : ℝ) : |x - y| = |y - x|
+`abs_sub_comm (x y : ℝ) : |x - y| = |y - x|`
 
-ge_max_iff (p q r) : r ≥ max p q  ↔ r ≥ p ∧ r ≥ q
+`ge_max_iff (p q r) : r ≥ max p q  ↔ r ≥ p ∧ r ≥ q`
 
-le_max_left p q : p ≤ max p q
+`le_max_left p q : p ≤ max p q`
 
-le_max_right p q : q ≤ max p q
+`le_max_right p q : q ≤ max p q`
 
 and the definition:
 
-def SeqLimit (u : ℕ → ℝ) (l : ℝ) : Prop :=
-∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε
+`def SeqLimit (u : ℕ → ℝ) (l : ℝ) : Prop := ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε`
 
 You can also use a property proved in the previous file:
 
-unique_limit : SeqLimit u l → SeqLimit u l' → l = l'
+`unique_limit : SeqLimit u l → SeqLimit u l' → l = l'`
 
-def extraction (φ : ℕ → ℕ) := ∀ n m, n < m → φ n < φ m
+`def extraction (φ : ℕ → ℕ) := ∀ n m, n < m → φ n < φ m`
 -/
 variable {φ : ℕ → ℕ}
 
@@ -55,10 +54,7 @@ variable {u : ℕ → ℝ} {a l : ℝ}
 /-
 In the exercise, we use `∃ n ≥ N, ...` which is the abbreviation of
 `∃ n, n ≥ N ∧ ...`.
-Lean can read this abbreviation, but displays it as the confusing:
-`∃ (n : ℕ) (H : n ≥ N)`
-One gets used to it. Alternatively, one can get rid of it using the lemma
-  exists_prop {p q : Prop} : (∃ (h : p), q) ↔ p ∧ q
+Lean can read this abbreviation, but does not it when displaying the goal.
 -/
 -- 0040
 /-- If `a` is a cluster point of `u` then there are values of
@@ -91,8 +87,9 @@ example : (∃ l, SeqLimit u l) → CauchySequence u := by
 
 /-
 In the next exercise, you can reuse
- near_cluster : cluster_point u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n - a| ≤ ε
+ `near_cluster : cluster_point u a → ∀ ε > 0, ∀ N, ∃ n ≥ N, |u n - a| ≤ ε`
 -/
 -- 0044
 example (hu : CauchySequence u) (hl : ClusterPoint u l) : SeqLimit u l := by
   sorry
+

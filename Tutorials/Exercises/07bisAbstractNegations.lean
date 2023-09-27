@@ -6,7 +6,7 @@ open Classical
 Theoretical negations.
 
 This file is for people interested in logic who want to fully understand
-negations.
+negations. It comes after the file `07FirstNegations`.
 
 Here we don't use `contrapose` or `push_neg`. The goal is to prove lemmas
 that are used by those tactics. Of course we can use
@@ -27,7 +27,7 @@ theorem non_imp (P Q : Prop) : ¬(P → Q) ↔ P ∧ ¬Q := by
   sorry
 
 -- In the next one, let's use the axiom
--- propext {P Q : Prop} : (P ↔ Q) → P = Q
+-- `propext {P Q : Prop} : (P ↔ Q) → P = Q`
 -- 0057
 example (P : Prop) : ¬P ↔ P = False := by
   sorry
@@ -55,3 +55,4 @@ example (P : ℝ → Prop) : (¬∀ x > 0, P x) ↔ ∃ x > 0, ¬P x := by
   sorry
 
 end NegationQuantifiers
+

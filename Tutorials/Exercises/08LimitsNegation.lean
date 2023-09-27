@@ -11,15 +11,14 @@ You need to complete the statement and then use the `check_me` tactic
 to check your answer. This tactic exists only for those exercises,
 it mostly calls `push_neg` and then cleans up a bit.
 
-def SeqLimit (u : ℕ → ℝ) (l : ℝ) : Prop :=
-∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε
+`def SeqLimit (u : ℕ → ℝ) (l : ℝ) : Prop := ∀ ε > 0, ∃ N, ∀ n ≥ N, |u n - l| ≤ ε`
 -/
 -- In this section, u denotes a sequence of real numbers
 -- f is a function from ℝ to ℝ
 -- x₀ and l are real numbers
 variable (u : ℕ → ℝ) (f : ℝ → ℝ) (x₀ l : ℝ)
 
-/- ./././Mathport/Syntax/Translate/Tactic/Builtin.lean:73:14: unsupported tactic `check_me #[] -/
+
 -- Negation of "u tends to l"
 -- 0062
 example :
@@ -54,17 +53,18 @@ Remember that `linarith` can find easy numerical contradictions.
 
 Also recall the following lemmas:
 
-abs_le {x y : ℝ} : |x| ≤ y ↔ -y ≤ x ∧ x ≤ y
+`abs_le {x y : ℝ} : |x| ≤ y ↔ -y ≤ x ∧ x ≤ y`
 
-ge_max_iff (p q r) : r ≥ max p q  ↔ r ≥ p ∧ r ≥ q
+`ge_max_iff (p q r) : r ≥ max p q  ↔ r ≥ p ∧ r ≥ q`
 
-le_max_left p q : p ≤ max p q
+`le_max_left p q : p ≤ max p q`
 
-le_max_right p q : q ≤ max p q
+`le_max_right p q : q ≤ max p q`
 
 /-- The sequence `u` tends to `+∞`. -/
-def tendsto_infinity (u : ℕ → ℝ) := ∀ A, ∃ N, ∀ n ≥ N, u n ≥ A
+`def tendsto_infinity (u : ℕ → ℝ) := ∀ A, ∃ N, ∀ n ≥ N, u n ≥ A`
 -/
+
 -- 0066
 example {u : ℕ → ℝ} : TendstoInfinity u → ∀ l, ¬SeqLimit u l := by
   sorry
@@ -78,24 +78,19 @@ example (u : ℕ → ℝ) (l : ℝ) (h : SeqLimit u l) (h' : NondecreasingSeq u)
 
 /-
 In the following exercises, `A : set ℝ` means that A is a set of real numbers.
-We can use the usual notation x ∈ A.
+We can use the usual notation `x ∈ A`.
 
 The notation `∀ x ∈ A, ...` is the abbreviation of `∀ x, x ∈ A → ... `
 
 The notation `∃ x ∈ A, ...` is the abbreviation of `∃ x, x ∈ A ∧ ... `.
-More precisely it is the abbreviation of `∃ x (H : x ∈ A), ...`
-which is Lean's strange way of saying `∃ x, x ∈ A ∧ ... `.
-You can convert between these forms using the lemma
-  exists_prop {p q : Prop} : (∃ (h : p), q) ↔ p ∧ q
 
 We'll work with upper bounds and supremums.
 Again we'll introduce specialized definitions for the sake of exercises, but mathlib
 has more general versions.
 
+`def UpperBound (A : set ℝ) (x : ℝ) := ∀ a ∈ A, a ≤ x`
 
-def UpperBound (A : set ℝ) (x : ℝ) := ∀ a ∈ A, a ≤ x
-
-def is_sup (A : set ℝ) (x : ℝ) := UpperBound A x ∧ ∀ y, UpperBound A y → x ≤ y
+`def IsSup (A : set ℝ) (x : ℝ) := UpperBound A x ∧ ∀ y, UpperBound A y → x ≤ y`
 
 
 Remark: one can easily show that a set of real numbers has at most one sup,
@@ -116,3 +111,4 @@ theorem le_of_le_add_all' {x y : ℝ} : (∀ ε > 0, y ≤ x + ε) → y ≤ x :
 -- 0070
 example {x y : ℝ} {u : ℕ → ℝ} (hu : SeqLimit u x) (ineg : ∀ n, u n ≤ y) : x ≤ y := by
   sorry
+
