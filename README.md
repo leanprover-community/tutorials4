@@ -2,9 +2,7 @@
 
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/leanprover-community/tutorials4)
 
-WIP port of the tutorials project to Lean 4.
-
-The goal of this project is to quickly teach you how to use Lean 3 for
+The goal of this project is to quickly teach you how to use Lean 4 for
 mathematics using a very hands-on approach. It can be used alongside
 [Theorem proving in Lean 4](https://leanprover.github.io/theorem_proving_in_lean4/)
 or independently.
@@ -39,12 +37,3 @@ need help about any specific exercise, you can come on
 [Zulip](https://leanprover.zulipchat.com) in the "new members" stream
 and look for a thread called "tutorials4 NNNN" where NNNN is the exercise
 number. If no such thread exists, you can create one!
-
-## Not yet working
-
-A list of things that don't work (yet) in Lean 4
-* `set_option pp.parens true`
-* `set_option pp.beta true` [use Kyle's meta-code]
-* `set_option pp.coercions true`?
-
-* ...
