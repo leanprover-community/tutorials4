@@ -54,7 +54,7 @@ In addition, recall that curly braces around `a b` mean Lean will figure out tho
 insist to help. This is because they can be deduced from the next argument `hab`.
 So it will be sufficient to feed `hab` and `c` to this function.
 -/
-example (a b : ℝ) (ha : 0 ≤ a) : b ≤ a + b := by
+example {a b : ℝ} (ha : 0 ≤ a) : b ≤ a + b := by
   calc
     b = 0 + b := by ring
     _ ≤ a + b := by exact add_le_add_right ha b
