@@ -63,7 +63,7 @@ So it will be sufficient to feed `hab` and `c` to this function.
 example {a b : ℝ} (ha : 0 ≤ a) : b ≤ a + b := by
   calc
     b = 0 + b := by ring
-    _ ≤ a + b := add_le_add_right ha b
+    _ ≤ a + b := by exact add_le_add_right ha b
 
 
 /-
