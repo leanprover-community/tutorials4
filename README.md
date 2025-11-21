@@ -4,7 +4,7 @@
 
 The goal of this project is to quickly teach you how to use Lean 4 for
 mathematics using a very hands-on approach. It can be used alongside
-[Theorem proving in Lean 4](https://leanprover.github.io/theorem_proving_in_lean4/)
+[Theorem proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/)
 or independently.
 
 Currently, these tutorials do not cover creating your own theories, only
