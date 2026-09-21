@@ -5,6 +5,8 @@ on:
 
 jobs:
   update_lean_xyz_branch:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     name: Update lean-x.y.z branch
     steps:

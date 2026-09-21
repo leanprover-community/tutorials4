@@ -4,6 +4,9 @@ on:
 
 jobs:
   upgrade_lean:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     name: Bump Lean and dependency versions
     steps:
