@@ -1,6 +1,6 @@
 # lean 4 tutorials
 
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/leanprover-community/tutorials4)
+**Warning:** this project is outdated. Please see our [learning resources](https://leanprover-community.github.io/learn.html) webpage for pointers to current learning resources. In particular the scope of this project is now covered by the [GlimpseOfLean tutorial](https://github.com/PatrickMassot/GlimpseOfLean).
 
 The goal of this project is to quickly teach you how to use Lean 4 for
 mathematics using a very hands-on approach. It can be used alongside
